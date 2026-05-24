@@ -2,17 +2,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHROMACHORDS - Bells Edition</title>
+    <title>CHROMACHORDS - Prodigies Keyboard</title>
     <style>
         * { box-sizing: border-box; }
         :root {
-            --bg-dark: #000000;
-            --panel-bg: #f0f2f5;
+            --bg-dark: #0f172a;
+            --panel-bg: #1e293b;
             --text-main: #ffffff;
-            --text-sub: #a0a0a0;
-            --progress-bg: #dfe6e9;
+            --text-sub: #94a3b8;
+            --progress-bg: #334155;
             --progress-fill: #2ecc71;
-            --timer-color: #e74c3c;
+            --timer-color: #ef4444;
+            --keyboard-bg: #0b0f19;
         }
 
         body {
@@ -25,11 +26,11 @@
             padding: 20px;
         }
 
-        .container { width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 1000px; display: flex; flex-direction: column; align-items: center; }
 
-        h1 { color: #1a73e8; font-size: 2.2rem; text-align: center; margin: 10px 0 5px 0; width: 100%; letter-spacing: 2px; }
+        h1 { color: #38bdf8; font-size: 2.2rem; text-align: center; margin: 10px 0 5px 0; width: 100%; letter-spacing: 2px; }
 
-        .header-line { width: 100%; height: 2px; background: #1a73e8; margin-bottom: 20px; opacity: 0.5; width: 80%; }
+        .header-line { width: 80%; height: 2px; background: #38bdf8; margin-bottom: 20px; opacity: 0.5; }
 
         .stats { display: flex; justify-content: center; gap: 30px; margin-bottom: 15px; }
         .stat-group { display: flex; flex-direction: column; align-items: center; }
@@ -38,104 +39,182 @@
 
         .game-panel {
             background-color: var(--panel-bg);
-            padding: 25px 25px 40px 25px;
-            border-radius: 40px;
+            padding: 25px;
+            border-radius: 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
-            height: auto;
         }
 
         .mode-tag {
-            background: #dfe6e9;
-            color: #636e72;
+            background: #334155;
+            color: #cbd5e1;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
-        .mode-tag.game-on { background: #ffeaa7; color: #d35400; }
-        .mode-tag.test-round { background: #a29bfe; color: #ffffff; }
+        .mode-tag.game-on { background: #f59e0b; color: #1e293b; }
+        .mode-tag.test-round { background: #6366f1; color: #ffffff; }
 
-        .level-select-container { margin-bottom: 15px; color: #636e72; font-weight: 700; font-size: 0.9rem; }
+        .level-select-container { margin-bottom: 15px; color: #cbd5e1; font-weight: 700; font-size: 0.9rem; }
         #level-select { 
             padding: 5px 10px; 
             border-radius: 10px; 
-            border: 2px solid #dfe6e9; 
-            background: white;
+            border: 2px solid #334155; 
+            background: #0f172a;
             font-weight: 700;
-            color: #1a73e8;
+            color: #38bdf8;
             cursor: pointer;
         }
 
-        .progress-container { width: 100%; height: 12px; background-color: var(--progress-bg); border-radius: 10px; margin-bottom: 5px; overflow: hidden; }
+        .progress-container { width: 100%; max-width: 500px; height: 12px; background-color: var(--progress-bg); border-radius: 10px; margin-bottom: 5px; overflow: hidden; }
         .progress-bar { height: 100%; width: 0%; background-color: var(--progress-fill); transition: width 0.3s; }
 
         #timer-text { font-size: 1.2rem; font-weight: 800; color: var(--timer-color); margin-bottom: 5px; height: 1.5rem; }
 
         #play-btn, #replay-btn, #begin-round-btn {
             background: #2ecc71; color: white; border: none; padding: 12px 30px; border-radius: 40px;
-            font-size: 1rem; font-weight: 700; cursor: pointer; margin-bottom: 10px;
+            font-size: 1rem; font-weight: 700; cursor: pointer; margin-bottom: 15px;
             box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
         }
-        #replay-btn { background: #1a73e8; display: none; box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3); }
-        #begin-round-btn { background: #e67e22; display: none; box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3); }
+        #replay-btn { background: #38bdf8; display: none; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3); color: #0f172a; }
+        #begin-round-btn { background: #f97316; display: none; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3); }
 
-        .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 5px; width: 100%; }
+        #msg { font-weight: 600; color: #94a3b8; min-height: 1.5rem; text-align: center; margin-bottom: 15px; font-size: 1.1rem; }
 
-        .chord-btn {
-            width: calc(20% - 8px); aspect-ratio: 1 / 1; border-radius: 15px; border: none;
-            cursor: pointer; font-size: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: background-color 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            background-color: #dfe6e9; padding: 0; position: relative;
-            color: #ffffff; font-weight: bold;
+        /* --- PIANO KEYBOARD GRID LAYOUT --- */
+        .keyboard-wrapper {
+            background-color: var(--keyboard-bg);
+            padding: 20px;
+            border-radius: 20px;
+            width: 100%;
+            overflow-x: auto; /* Scrollable if screen is too small */
+            display: flex;
+            justify-content: center;
         }
 
-        .chord-btn span.bell-emoji {
-            font-size: 1.8rem; line-height: 1; opacity: 0; transition: opacity 0.2s;
+        .piano-grid {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(12, 65px); /* 12 White keys total from A3 to E5 */
+            gap: 5px;
+            width: max-content;
         }
 
-        .chord-btn span.note-label {
-            font-size: 0.75rem; display: block; margin-top: 2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); opacity: 0; transition: opacity 0.2s;
+        /* Row designations */
+        .sharps-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 110px;
+            z-index: 2;
+            pointer-events: none; /* Let clicks pass through empty spaces */
+            display: grid;
+            grid-template-columns: repeat(12, 65px);
+            gap: 5px;
         }
 
-        .chord-btn.active span.bell-emoji, .chord-btn.active span.note-label { opacity: 1; }
+        .naturals-layer {
+            display: contents; /* Behaves as direct grid children */
+        }
 
-        /* Prodigies Desaturated / Base Colors matched to notes */
-        .chord-btn.active.purple-3 { background-color: #9c27b0; }
-        .chord-btn.active.pink-3   { background-color: #e91e63; }
-        .chord-btn.active.red-4    { background-color: #f44336; }
-        .chord-btn.active.orange-4 { background-color: #ff9800; }
-        .chord-btn.active.yellow-4 { background-color: #ffeb3b; color: #000 !important; }
-        .chord-btn.active.yellow-4 span.note-label { text-shadow: none; }
-        .chord-btn.active.green-4  { background-color: #4caf50; }
-        .chord-btn.active.teal-4   { background-color: #009688; }
-        .chord-btn.active.purple-4 { background-color: #673ab7; }
-        .chord-btn.active.pink-4   { background-color: #ff4081; }
+        /* Bell Buttons Base */
+        .bell-btn {
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 2px;
+            position: relative;
+            transition: transform 0.1s, opacity 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            pointer-events: auto; /* Re-enable clicks inside layers */
+            background-color: #1e293b;
+            opacity: 0.25; /* Dimmed when locked/inactive */
+        }
         
-        /* High Octave variants (lighter or styled shifts for distinct tracking) */
-        .chord-btn.active.red-5    { background-color: #ff7961; }
-        .chord-btn.active.orange-5 { background-color: #ffc947; color: #000 !important; }
-        .chord-btn.active.orange-5 span.note-label { text-shadow: none; }
-        .chord-btn.active.yellow-5 { background-color: #ffff72; color: #000 !important; }
-        .chord-btn.active.yellow-5 span.note-label { text-shadow: none; }
-        .chord-btn.active.green-5  { background-color: #80e27e; color: #000 !important; }
-        .chord-btn.active.green-5 span.note-label { text-shadow: none; }
-        .chord-btn.active.teal-5   { background-color: #52c7b8; }
-        
-        /* Sharp notes (Greyscale/Accent shifts) */
-        .chord-btn.active.sharp-grey { background-color: #78909c; }
+        .bell-btn.active { opacity: 1; }
+        .bell-btn:active { transform: scale(0.95); }
 
-        #msg { font-weight: 600; color: #636e72; min-height: 1.5rem; text-align: center; margin-top: 5px; font-size: 0.95rem; }
-
-        @media (max-width: 480px) {
-            .chord-btn { font-size: 1.1rem; }
-            .chord-btn span.bell-emoji { font-size: 1.3rem; }
-            .chord-btn span.note-label { font-size: 0.65rem; }
+        /* Naturals Row Sizing */
+        .naturals-layer .bell-btn {
+            height: 160px;
+            margin-top: 105px; /* Leave room above for sharp layout overlap */
         }
+
+        /* Sharps Row Sizing and precise layout offsets over white key gaps */
+        .sharps-layer .bell-btn {
+            height: 100px;
+            grid-column-end: span 2;
+            width: 50px;
+        }
+        
+        /* Absolute offsets alignments to position black keys directly over dividers */
+        #btn-Bb3  { grid-column: 1; margin-left: 40px; }
+        #btn-Db4  { grid-column: 3; margin-left: 40px; }
+        #btn-Eb4  { grid-column: 4; margin-left: 40px; }
+        #btn-Fb4  { display: none; } /* No structural sharp between E and F */
+        #btn-Gb4  { grid-column: 6; margin-left: 40px; }
+        #btn-Ab4  { grid-column: 7; margin-left: 40px; }
+        #btn-Bb4  { grid-column: 8; margin-left: 40px; }
+        #btn-Db5  { grid-column: 10; margin-left: 40px; }
+        #btn-Eb5  { grid-column: 11; margin-left: 40px; }
+
+        /* Decorative Bell Typography and Cap Graphics */
+        .bell-cap {
+            background: #000000;
+            color: #ffffff;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 5px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.4);
+            text-align: center;
+            min-width: 28px;
+        }
+        .naturals-layer .bell-cap {
+            background: #ffffff;
+            color: #000000;
+            font-size: 0.75rem;
+            border: 1px solid rgba(0,0,0,0.3);
+        }
+
+        .bell-emoji { font-size: 1.8rem; line-height: 1; }
+        .sharps-layer .bell-emoji { font-size: 1.4rem; }
+
+        /* --- PRODIGIES IDENTICAL COLOR PALETTE --- */
+        /* Naturals */
+        .bell-btn.active.A3 { background-color: #5b448a; } /* Deep Purple */
+        .bell-btn.active.B3 { background-color: #d1528b; } /* Pink-Magenta */
+        .bell-btn.active.C4 { background-color: #dc2626; } /* Primary Red */
+        .bell-btn.active.D4 { background-color: #ea580c; } /* Vivid Orange */
+        .bell-btn.active.E4 { background-color: #eab308; } /* Bright Yellow */
+        .bell-btn.active.F4 { background-color: #65a30d; } /* Yellow-Green */
+        .bell-btn.active.G4 { background-color: #0d9488; } /* Teal-Blue */
+        .bell-btn.active.A4 { background-color: #7c3aed; } /* True Purple */
+        .bell-btn.active.B4 { background-color: #ec4899; } /* Light Pink */
+        .bell-btn.active.C5 { background-color: #be123c; } /* Crimson/Darker Red */
+        .bell-btn.active.D5 { background-color: #f97316; } /* Light Orange/Apricot */
+        .bell-btn.active.E5 { background-color: #84cc16; } /* Lime Green */
+
+        /* Sharps / Flats (Muted/Deep tones matching background cards) */
+        .bell-btn.active.Bb3 { background-color: #704d8c; }
+        .bell-btn.active.Db4 { background-color: #cd5a43; }
+        .bell-btn.active.Eb4 { background-color: #e3be54; }
+        .bell-btn.active.Gb4 { background-color: #559c74; }
+        .bell-btn.active.Ab4 { background-color: #3b7bb8; }
+        .bell-btn.active.Bb4 { background-color: #825e9c; }
+        .bell-btn.active.Db5 { background-color: #c2410c; }
+        .bell-btn.active.Eb5 { background-color: #ca8a04; }
+
     </style>
 </head>
 <body>
@@ -145,7 +224,7 @@
     
     <div class="stats">
         <div class="stat-group"><span id="streak" class="stat-val">0</span><span class="stat-label">Streak</span></div>
-        <div class="stat-group"><span id="strikes" class="stat-val" style="color:#ff5252">0</span><span class="stat-label">Strikes</span></div>
+        <div class="stat-group"><span id="strikes" class="stat-val" style="color:#ef4444">0</span><span class="stat-label">Strikes</span></div>
     </div>
 
     <div class="game-panel">
@@ -154,8 +233,7 @@
         <div class="level-select-container" id="selector-box">
             Start at Level: 
             <select id="level-select" onchange="changeStartingLevel()">
-                <!-- Generated by JS -->
-            </select>
+                </select>
         </div>
 
         <div class="progress-container"><div id="progress-bar" class="progress-bar"></div></div>
@@ -166,38 +244,41 @@
         <button id="replay-btn" onclick="replaySound()">Replay Sound</button>
         <div id="msg">Explore all sounds before playing!</div>
 
-        <div class="grid" id="button-grid">
-            <!-- Dynamic Injection to match A3-E5 progression perfectly -->
+        <div class="keyboard-wrapper">
+            <div class="piano-grid">
+                <div class="sharps-layer" id="sharps-container"></div>
+                <div class="naturals-layer" id="naturals-container"></div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
+    // Audio Context Setup
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const soundBuffers = {};
     
-    // Complete structured array mapping structural audio names, labels, and classes
+    // Complete note dictionary linking frequencies (MIDI math equivalents)
     const progression = [
-        { id: "A3", label: "A3", style: "purple-3" },
-        { id: "Bb3", label: "A♯3", style: "sharp-grey" },
-        { id: "B3", label: "B3", style: "pink-3" },
-        { id: "C4", label: "C4", style: "red-4" },
-        { id: "Db4", label: "C♯4", style: "sharp-grey" },
-        { id: "D4", label: "D4", style: "orange-4" },
-        { id: "Eb4", label: "D♯4", style: "sharp-grey" },
-        { id: "E4", label: "E4", style: "yellow-4" },
-        { id: "F4", label: "F4", style: "green-4" },
-        { id: "Gb4", label: "F♯4", style: "sharp-grey" },
-        { id: "G4", label: "G4", style: "teal-4" },
-        { id: "Ab4", label: "G♯4", style: "sharp-grey" },
-        { id: "A4", label: "A4", style: "purple-4" },
-        { id: "Bb4", label: "A♯4", style: "sharp-grey" },
-        { id: "B4", label: "B4", style: "pink-4" },
-        { id: "C5", label: "C5", style: "red-5" },
-        { id: "Db5", label: "C♯5", style: "sharp-grey" },
-        { id: "D5", label: "D5", style: "orange-5" },
-        { id: "Eb5", label: "D♯5", style: "sharp-grey" },
-        { id: "E5", label: "E5", style: "yellow-5" }
+        { id: "A3",  label: "A",     freq: 220.00, type: "white", style: "A3" },
+        { id: "Bb3", label: "A#/Bb", freq: 233.08, type: "black", style: "Bb3" },
+        { id: "B3",  label: "B",     freq: 246.94, type: "white", style: "B3" },
+        { id: "C4",  label: "C",     freq: 261.63, type: "white", style: "C4" },
+        { id: "Db4", label: "C#/Db", freq: 277.18, type: "black", style: "Db4" },
+        { id: "D4",  label: "D",     freq: 293.66, type: "white", style: "D4" },
+        { id: "Eb4", label: "D#/Eb", freq: 311.13, type: "black", style: "Eb4" },
+        { id: "E4",  label: "E",     freq: 329.63, type: "white", style: "E4" },
+        { id: "F4",  label: "F",     freq: 349.23, type: "white", style: "F4" },
+        { id: "Gb4", label: "F#/Gb", freq: 369.99, type: "black", style: "Gb4" },
+        { id: "G4",  label: "G",     freq: 392.00, type: "white", style: "G4" },
+        { id: "Ab4", label: "G#/Ab", freq: 415.30, type: "black", style: "Ab4" },
+        { id: "A4",  label: "A",     freq: 440.00, type: "white", style: "A4" },
+        { id: "Bb4", label: "A#/Bb", freq: 466.16, type: "black", style: "Bb4" },
+        { id: "B4",  label: "B",     freq: 493.88, type: "white", style: "B4" },
+        { id: "C5",  label: "C",     freq: 523.25, type: "white", style: "C5" },
+        { id: "Db5", label: "C#/Db", freq: 554.37, type: "black", style: "Db5" },
+        { id: "D5",  label: "d",     freq: 587.33, type: "white", style: "D5" },
+        { id: "Eb5", label: "d#/e*", freq: 622.25, type: "black", style: "Eb5" },
+        { id: "E5",  label: "e",     freq: 659.25, type: "white", style: "E5" }
     ];
     
     let gameLevel = 1; 
@@ -209,23 +290,34 @@
     let timeLeft = 10;
     let timerInterval = null;
 
-    // Render Grid Elements Dynamic Setup
-    const gridContainer = document.getElementById('button-grid');
+    // Dynamically render the keyboard arrangement matching image layout
+    const sharpsRow = document.getElementById('sharps-container');
+    const naturalsRow = document.getElementById('naturals-container');
+
     progression.forEach((note) => {
         const btn = document.createElement('button');
-        btn.className = `chord-btn active ${note.style}`;
+        btn.className = `bell-btn ${note.style}`;
         btn.id = `btn-${note.id}`;
         btn.setAttribute('onclick', `handleInput('${note.id}')`);
-        
-        btn.innerHTML = `<span class="bell-emoji">🛎️</span><span class="note-label">${note.label}</span>`;
-        gridContainer.appendChild(btn);
+        btn.innerHTML = `
+            <div class="bell-cap">${note.label}</div>
+            <div class="bell-emoji">🔔</div>
+            <div></div>
+        `;
+
+        if (note.type === "black") {
+            sharpsRow.appendChild(btn);
+        } else {
+            naturalsRow.appendChild(btn);
+        }
     });
 
+    // Setup level selection box elements
     const selector = document.getElementById('level-select');
     progression.forEach((note, i) => {
         let opt = document.createElement('option');
         opt.value = i + 1;
-        opt.innerHTML = `Level ${i + 1} (${note.label})`;
+        opt.innerHTML = `Level ${i + 1} (${note.id})`;
         selector.appendChild(opt);
     });
 
@@ -236,22 +328,28 @@
         }
     }
 
-    async function loadSound(noteObj) {
-        try {
-            const response = await fetch(`${noteObj.id}.wav`);
-            const arrayBuffer = await response.arrayBuffer();
-            soundBuffers[noteObj.id] = await audioCtx.decodeAudioData(arrayBuffer);
-        } catch (e) { console.log("Sound failed: " + noteObj.id); }
-    }
-    progression.forEach(loadSound);
-
-    function playSound(name) {
+    // Mathematical Programmatic Synthesizer Function (Replaces missing WAV files gracefully)
+    function playSound(noteId) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
-        if (!soundBuffers[name]) return;
-        const source = audioCtx.createBufferSource();
-        source.buffer = soundBuffers[name];
-        source.connect(audioCtx.destination);
-        source.start(0);
+        const noteConfig = progression.find(n => n.id === noteId);
+        if (!noteConfig) return;
+
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        // Bell timbre optimization (Sine foundation with a high harmonic chime ring)
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(noteConfig.freq, audioCtx.currentTime);
+        
+        // Quick transient percussion strike envelope shape
+        gainNode.gain.setValueAtTime(0.6, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
+        
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1.2);
     }
 
     function replaySound() { if (currentTarget) { playSound(currentTarget); startTimer(); } }
@@ -282,13 +380,13 @@
         document.getElementById('begin-round-btn').style.display = "block";
         document.getElementById('selector-box').style.display = "none";
         
-        document.getElementById('mode-label').innerText = "Test Round: Try the new sound!";
+        document.getElementById('mode-label').innerText = "Practice Round: Try the layout!";
         document.getElementById('mode-label').className = "mode-tag test-round";
         
         updateUI();
         
         const newNote = progression[gameLevel - 1];
-        document.getElementById('msg').innerText = `Level ${gameLevel}: Practice playing ${newNote.label}!`;
+        document.getElementById('msg').innerText = `Level ${gameLevel}: Play target note ${newNote.id} to practice!`;
     }
 
     function startActualGame() {
@@ -306,7 +404,7 @@
         const choiceObj = available[Math.floor(Math.random() * available.length)];
         currentTarget = choiceObj.id;
         playSound(currentTarget);
-        document.getElementById('msg').innerText = "Which note was that?";
+        document.getElementById('msg').innerText = "Which bell note was that?";
         startTimer();
     }
 
@@ -314,11 +412,11 @@
         const btn = document.getElementById(`btn-${choice}`);
         if (!btn.classList.contains('active')) return;
 
+        playSound(choice);
+
         if (!isGameActive || isTestRound) {
-            playSound(choice);
             if(isTestRound) {
-                const noteItem = progression.find(p => p.id === choice);
-                document.getElementById('msg').innerText = "Practice: " + noteItem.label;
+                document.getElementById('msg').innerText = "Practice: " + choice;
             }
             return;
         }
@@ -331,10 +429,10 @@
             if (streak >= 20) {
                 if (gameLevel < progression.length) {
                     gameLevel++;
-                    document.getElementById('msg').innerText = "LEVEL UP! Prepare for a new bell sound...";
+                    document.getElementById('msg').innerText = "LEVEL UP! Expanding keyboard scale...";
                     setTimeout(prepareRound, 1500);
                 } else {
-                    document.getElementById('msg').innerText = "MASTERED! You finished all levels!";
+                    document.getElementById('msg').innerText = "MASTERED! You completed all bell levels!";
                     isGameActive = false;
                     setTimeout(() => location.reload(), 3000);
                 }
@@ -361,10 +459,14 @@
         document.getElementById('streak').innerText = streak;
         document.getElementById('strikes').innerText = strikes;
         document.getElementById('progress-bar').style.width = (streak * 5) + "%";
+        
         progression.forEach((note, i) => {
             const btn = document.getElementById(`btn-${note.id}`);
-            if (!isGameActive || i < gameLevel) btn.classList.add('active');
-            else btn.classList.remove('active');
+            if (!isGameActive || i < gameLevel) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
         });
     }
     updateUI();
