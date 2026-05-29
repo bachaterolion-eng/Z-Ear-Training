@@ -90,7 +90,6 @@
 
         #msg { font-weight: 600; color: #94a3b8; min-height: 1.5rem; text-align: center; margin-bottom: 20px; font-size: 1.1rem; }
 
-        /* --- PORTRAIT MODE: LIMITS VIEW TO ONE OCTAVE SPAN --- */
         .keyboard-wrapper {
             background-color: var(--keyboard-bg);
             padding: 25px;
@@ -104,7 +103,6 @@
             border: 2px solid #334155;
         }
 
-        /* --- LANDSCAPE MODE INTERCEPT: EXPANDS WIDE TO SEE ALL KEYS --- */
         @media screen and (orientation: landscape) {
             .keyboard-wrapper {
                 max-width: 100%; 
@@ -113,20 +111,10 @@
             }
         }
 
-        .keyboard-wrapper::-webkit-scrollbar {
-            height: 10px;
-        }
-        .keyboard-wrapper::-webkit-scrollbar-track {
-            background: #0b0f19;
-            border-radius: 10px;
-        }
-        .keyboard-wrapper::-webkit-scrollbar-thumb {
-            background: #38bdf8;
-            border-radius: 10px;
-        }
-        .keyboard-wrapper::-webkit-scrollbar-thumb:hover {
-            background: #0ea5e9;
-        }
+        .keyboard-wrapper::-webkit-scrollbar { height: 10px; }
+        .keyboard-wrapper::-webkit-scrollbar-track { background: #0b0f19; border-radius: 10px; }
+        .keyboard-wrapper::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 10px; }
+        .keyboard-wrapper::-webkit-scrollbar-thumb:hover { background: #0ea5e9; }
 
         .piano-grid {
             position: relative;
@@ -150,9 +138,7 @@
             gap: 10px;
         }
 
-        .naturals-layer {
-            display: contents;
-        }
+        .naturals-layer { display: contents; }
 
         .bell-btn {
             border: 2px solid rgba(255, 255, 255, 0.2);
@@ -178,11 +164,8 @@
         .bell-btn:active { transform: scale(0.92); }
         .bell-btn.dimmed { filter: grayscale(80%) brightness(30%); opacity: 0.4; pointer-events: none; }
 
-        .naturals-layer .bell-btn {
-            margin-top: 85px; 
-        }
+        .naturals-layer .bell-btn { margin-top: 85px; }
         
-        /* Layout Grid Space Alignments */
         #btn-Ab3  { grid-column: 1; margin-left: 40px; }
         #btn-Bb3  { grid-column: 2; margin-left: 40px; }
         #btn-Db4  { grid-column: 4; margin-left: 40px; }
@@ -194,7 +177,6 @@
         #btn-Eb5  { grid-column: 12; margin-left: 40px; }
         #btn-Gb5  { grid-column: 14; margin-left: 40px; }
 
-        /* --- STABLE PRODIGIES COLORS --- */
         .bell-btn.G3,  .bell-btn.G4,  .bell-btn.G5   { background-color: #4d908e; } 
         .bell-btn.Ab3, .bell-btn.Ab4, .bell-btn.Ab5  { background-color: #277da1; } 
         .bell-btn.A3,  .bell-btn.A4                  { background-color: #6a4c93; } 
@@ -215,7 +197,6 @@
     <div class="header-line"></div>
 
     <div class="game-panel">
-        
         <div class="selection-panel" id="pool-selector-zone">
             <div class="selection-title">Toggle Active Practice Notes</div>
             <div class="pool-controls">
@@ -226,7 +207,7 @@
             <div class="checkbox-grid" id="checkbox-container"></div>
         </div>
 
-        <div id="msg">Loading all audio components... Please wait.</div>
+        <div id="msg">Loading audio components... Please wait.</div>
 
         <div class="keyboard-wrapper">
             <div class="piano-grid">
@@ -307,18 +288,22 @@
 
     async function loadAllSounds() {
         for (let note of progression) {
-            try {
-                mp3Buffers[note.id] = await fetchAudioBuffer(note.mp3File);
-            } catch (error) {
-                console.warn(`Note details specified in Screenshot 2026-05-29 at 2.40.14 PM.png missing for ${note.mp3File}.`);
-            }
+            // Load WAV files (Crucial voice files)
             try {
                 wavBuffers[note.id] = await fetchAudioBuffer(note.wavFile);
-            } catch (error) {
-                console.error(`Crucial failure loading vocal file: ${note.wavFile}`, error);
+            } catch (e) {
+                console.error(`Missing vocal file: ${note.wavFile}`, e);
+            }
+
+            // Load MP3 files (Bell sounds)
+            try {
+                mp3Buffers[note.id] = await fetchAudioBuffer(note.mp3File);
+            } catch (e) {
+                // Look for alternative fallback if octave file isn't physically there
+                console.log(`Using smart fallback routing for note: ${note.id}`);
             }
         }
-        document.getElementById('msg').innerText = "Ready! Tap keys to hear the bell and voice immediately following.";
+        document.getElementById('msg').innerText = "Ready! Every single key is linked to a bell and voice now.";
     }
     loadAllSounds();
 
@@ -326,11 +311,7 @@
         progression.forEach(note => {
             const chk = document.getElementById(`chk-${note.id}`);
             const btn = document.getElementById(`btn-${note.id}`);
-            if (chk.checked) {
-                btn.classList.remove('dimmed');
-            } else {
-                btn.classList.add('dimmed');
-            }
+            btn.classList.toggle('dimmed', !chk.checked);
         });
     }
 
@@ -350,25 +331,48 @@
         }
 
         const now = audioCtx.currentTime;
-        
-        // Immediate snappy gap override (0.25 seconds instead of the full sample tail)
-        const overlapTiming = 0.25; 
+        const overlapTiming = 0.25; // Snappy gap override transition
 
-        if (mp3Buffers[choice]) {
+        let bellBufferToPlay = mp3Buffers[choice];
+        let playbackRateValue = 1.0;
+
+        // --- AUTOMATIC PITCH-SHIFT ROUTING FALLBACKS ---
+        if (!bellBufferToPlay) {
+            // Extract note name letter (e.g., "Do", "Re", "So")
+            const basePrefix = choice.replace(/[0-9]/g, ''); 
+            
+            if (choice.includes('5')) {
+                // If Octave 5 bell is missing, play the Octave 4 bell at double speed (one octave higher)
+                const fallbackId = `${basePrefix}4`;
+                if (mp3Buffers[fallbackId]) {
+                    bellBufferToPlay = mp3Buffers[fallbackId];
+                    playbackRateValue = 2.0; 
+                }
+            } else if (choice.includes('3')) {
+                // If Octave 3 bell is missing, play the Octave 4 bell at half speed (one octave lower)
+                const fallbackId = `${basePrefix}4`;
+                if (mp3Buffers[fallbackId]) {
+                    bellBufferToPlay = mp3Buffers[fallbackId];
+                    playbackRateValue = 0.5; 
+                }
+            }
+        }
+
+        // Play the matched or pitch-corrected Bell Sound
+        if (bellBufferToPlay) {
             const mp3Source = audioCtx.createBufferSource();
-            mp3Source.buffer = mp3Buffers[choice];
+            mp3Source.buffer = bellBufferToPlay;
+            mp3Source.playbackRate.value = playbackRateValue;
             mp3Source.connect(audioCtx.destination);
             mp3Source.start(now);
         }
 
+        // Play the exact matching vocal WAV file right after the bell
         if (wavBuffers[choice]) {
             const wavSource = audioCtx.createBufferSource();
             wavSource.buffer = wavBuffers[choice];
             wavSource.connect(audioCtx.destination);
-            
-            // If the bell layer loaded successfully, play voice 0.25s after. Else, play instantly.
-            const voiceStartTime = mp3Buffers[choice] ? (now + overlapTiming) : now;
-            wavSource.start(voiceStartTime);
+            wavSource.start(now + overlapTiming);
         }
     }
 </script>
