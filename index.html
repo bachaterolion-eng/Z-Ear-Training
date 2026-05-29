@@ -1,4 +1,3 @@
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,9 +10,6 @@
             --panel-bg: #1e293b;
             --text-main: #ffffff;
             --text-sub: #94a3b8;
-            --progress-bg: #334155;
-            --progress-fill: #2ecc71;
-            --timer-color: #ef4444;
             --keyboard-bg: #0b0f19;
         }
 
@@ -31,12 +27,7 @@
 
         h1 { color: #38bdf8; font-size: 2.5rem; font-weight: 800; text-align: center; margin: 10px 0 5px 0; width: 100%; letter-spacing: 1px; }
 
-        .header-line { width: 80%; height: 2px; background: #38bdf8; margin-bottom: 20px; opacity: 0.5; }
-
-        .stats { display: flex; justify-content: center; gap: 30px; margin-bottom: 15px; }
-        .stat-group { display: flex; flex-direction: column; align-items: center; }
-        .stat-val { font-size: 2.5rem; font-weight: 800; line-height: 1; }
-        .stat-label { font-size: 0.8rem; text-transform: uppercase; color: var(--text-sub); letter-spacing: 1px; }
+        .header-line { width: 80%; height: 2px; background: #38bdf8; margin-bottom: 25px; opacity: 0.5; }
 
         .game-panel {
             background-color: var(--panel-bg);
@@ -48,24 +39,11 @@
             width: 100%;
         }
 
-        .mode-tag {
-            background: #334155;
-            color: #cbd5e1;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-        }
-        .mode-tag.game-on { background: #f59e0b; color: #1e293b; }
-        .mode-tag.test-round { background: #6366f1; color: #ffffff; }
-
         .selection-panel {
             background: rgba(15, 23, 42, 0.6);
             border-radius: 15px;
             padding: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             width: 100%;
             border: 1px solid #334155;
         }
@@ -110,20 +88,7 @@
             cursor: pointer;
         }
 
-        .progress-container { width: 100%; max-width: 500px; height: 12px; background-color: var(--progress-bg); border-radius: 10px; margin-bottom: 5px; overflow: hidden; }
-        .progress-bar { height: 100%; width: 0%; background-color: var(--progress-fill); transition: width 0.3s; }
-
-        #timer-text { font-size: 1.2rem; font-weight: 800; color: var(--timer-color); margin-bottom: 5px; height: 1.5rem; }
-
-        #play-btn, #replay-btn, #begin-round-btn {
-            background: #2ecc71; color: white; border: none; padding: 12px 30px; border-radius: 40px;
-            font-size: 1rem; font-weight: 700; cursor: pointer; margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
-        }
-        #replay-btn { background: #38bdf8; display: none; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3); color: #0f172a; }
-        #begin-round-btn { background: #f97316; display: none; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3); }
-
-        #msg { font-weight: 600; color: #94a3b8; min-height: 1.5rem; text-align: center; margin-bottom: 15px; font-size: 1.1rem; }
+        #msg { font-weight: 600; color: #94a3b8; min-height: 1.5rem; text-align: center; margin-bottom: 20px; font-size: 1.1rem; }
 
         /* --- STABLE SQUARE GEOMETRY BOARD GRID --- */
         .keyboard-wrapper {
@@ -139,7 +104,7 @@
         .piano-grid {
             position: relative;
             display: grid;
-            grid-template-columns: repeat(12, 70px); /* Equal distributed column tracking grid width */
+            grid-template-columns: repeat(12, 70px); 
             gap: 10px;
             width: max-content;
         }
@@ -161,7 +126,7 @@
             display: contents;
         }
 
-        /* Perfectly Proportioned Square Blocks Styling */
+        /* Square Blocks Styling */
         .bell-btn {
             border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
@@ -170,7 +135,7 @@
             align-items: center;
             justify-content: center;
             width: 70px;
-            height: 70px; /* Force proportional squares */
+            height: 70px; 
             position: relative;
             transition: transform 0.05s, filter 0.2s;
             box-shadow: 0 4px 8px rgba(0,0,0,0.4);
@@ -184,14 +149,14 @@
         }
         
         .bell-btn:active { transform: scale(0.92); }
-        .bell-btn.dimmed { filter: grayscale(80%) brightness(30%); opacity: 0.4; }
+        .bell-btn.dimmed { filter: grayscale(80%) brightness(30%); opacity: 0.4; pointer-events: none; }
 
-        /* Push row spacing parameters down dynamically for the base layer */
+        /* Spacing for base layer */
         .naturals-layer .bell-btn {
-            margin-top: 85px; /* Creates clean spacing under top row */
+            margin-top: 85px; 
         }
         
-        /* Direct Alignment mapping configuration matching image spacing structure */
+        /* Layout alignments mapped from Screenshot 2026-05-29 at 12.38.18 PM.png */
         #btn-Bb3  { grid-column: 1; margin-left: 40px; }
         #btn-Db4  { grid-column: 3; margin-left: 40px; }
         #btn-Eb4  { grid-column: 4; margin-left: 40px; }
@@ -202,29 +167,17 @@
         #btn-Eb5  { grid-column: 11; margin-left: 40px; }
 
         /* --- IDENTICAL INTER-OCTAVE PRODIGIES HEX COLORS --- */
-        /* Red Notes */
         .bell-btn.C4, .bell-btn.C5   { background-color: #d62828; } 
-        /* Di Notes (Dark Red/Orange Sharp) */
         .bell-btn.Db4, .bell-btn.Db5 { background-color: #e65c40; } 
-        /* Re Notes */
         .bell-btn.D4, .bell-btn.D5   { background-color: #f3722c; } 
-        /* Me Notes (Golden Muted Yellow Sharp) */
         .bell-btn.Eb4, .bell-btn.Eb5 { background-color: #f9c74f; } 
-        /* Mi Notes */
         .bell-btn.E4, .bell-btn.E5   { background-color: #f9cd13; } 
-        /* Fa Notes */
         .bell-btn.F4                 { background-color: #90be6d; } 
-        /* Fi Notes (Forest Pastel Green Sharp) */
         .bell-btn.Gb4                { background-color: #43aa8b; } 
-        /* So Notes */
         .bell-btn.G4                 { background-color: #4d908e; } 
-        /* Si Notes (Classic Royal Blue Sharp) */
         .bell-btn.Ab4                { background-color: #277da1; } 
-        /* La Notes */
         .bell-btn.A3, .bell-btn.A4   { background-color: #6a4c93; } 
-        /* Te Notes (Pastel Violet Sharp) */
         .bell-btn.Bb3, .bell-btn.Bb4 { background-color: #8367a6; } 
-        /* Ti Notes */
         .bell-btn.B3, .bell-btn.B4   { background-color: #f35b8c; } 
     </style>
 </head>
@@ -232,17 +185,12 @@
 <div class="container">
     <h1>Zayne's Ear Training</h1>
     <div class="header-line"></div>
-    
-    <div class="stats">
-        <div class="stat-group"><span id="streak" class="stat-val">0</span><span class="stat-label">Streak</span></div>
-        <div class="stat-group"><span id="strikes" class="stat-val" style="color:#ef4444">0</span><span class="stat-label">Strikes</span></div>
-    </div>
 
     <div class="game-panel">
-        <div id="mode-label" class="mode-tag">Explore Mode</div>
         
+        <!-- VISIBLE CONFIGURATION PANEL FOR INTERACTIVE TESTING CHOICE -->
         <div class="selection-panel" id="pool-selector-zone">
-            <div class="selection-title">Choose Game Sound Selection Pool</div>
+            <div class="selection-title">Toggle Active Practice Notes</div>
             <div class="pool-controls">
                 <button class="pool-btn" onclick="setPoolPreset('all')">Select All</button>
                 <button class="pool-btn" onclick="setPoolPreset('naturals')">Naturals Only</button>
@@ -251,12 +199,6 @@
             <div class="checkbox-grid" id="checkbox-container"></div>
         </div>
 
-        <div class="progress-container"><div id="progress-bar" class="progress-bar"></div></div>
-        <div id="timer-text"></div>
-        
-        <button id="play-btn" onclick="prepareRound()">Start Game</button>
-        <button id="begin-round-btn" onclick="startActualGame()">Begin Round</button>
-        <button id="replay-btn" onclick="replaySound()">Replay Sound</button>
         <div id="msg">Loading audio components... Please wait.</div>
 
         <div class="keyboard-wrapper">
@@ -269,7 +211,6 @@
 </div>
 
 <script>
-    // Audio Pipeline Context Setup
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioCtx = new AudioContext();
     
@@ -296,21 +237,13 @@
         { id: "E5",  solfege: "Mi 5", file: "Mi 5.wav", type: "white", style: "E5" }
     ];
     
-    let audioBuffers = {}; // Pre-cached binary data stored inside RAM
-    let streak = 0;
-    let strikes = 0;
-    let currentTarget = null;
-    let isGameActive = false;
-    let isTestRound = false; 
-    let timeLeft = 10;
-    let timerInterval = null;
-    let activeGamePool = [];
+    let audioBuffers = {}; 
 
     const sharpsRow = document.getElementById('sharps-container');
     const naturalsRow = document.getElementById('naturals-container');
     const checkboxGrid = document.getElementById('checkbox-container');
 
-    // Build the structural grid and layout checkboxes
+    // Build the square structures and toggle control selectors
     progression.forEach((note) => {
         const btn = document.createElement('button');
         btn.className = `bell-btn ${note.style}`;
@@ -333,7 +266,7 @@
         checkboxGrid.appendChild(label);
     });
 
-    // Zero-Latency Asset Loader Engine
+    // RAM cache audio loading pipeline for instant execution
     async function loadAllSounds() {
         for (let note of progression) {
             try {
@@ -341,10 +274,10 @@
                 const arrayBuffer = await response.arrayBuffer();
                 audioBuffers[note.id] = await audioCtx.decodeAudioData(arrayBuffer);
             } catch (error) {
-                console.error(`Asset fetch/decode anomaly on item: ${note.file}`, error);
+                console.error(`Asset path loader anomaly: ${note.file}`, error);
             }
         }
-        document.getElementById('msg').innerText = "Explore all sounds before playing!";
+        document.getElementById('msg').innerText = "Tap any active square to play the sound instantly!";
     }
     loadAllSounds();
 
@@ -370,133 +303,18 @@
         syncPoolUI();
     }
 
-    function getSelectedPool() {
-        let selected = [];
-        progression.forEach(note => {
-            if (document.getElementById(`chk-${note.id}`).checked) {
-                selected.push(note.id);
-            }
-        });
-        return selected;
-    }
-
-    // High performance instantaneous firing play function
-    function playSound(noteId) {
+    function handleInput(choice) {
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
         
-        if (!audioBuffers[noteId]) return; // Safeguard if file isn't loaded yet
+        if (!audioBuffers[choice]) return; 
 
+        // Instant fire context pipeline
         const source = audioCtx.createBufferSource();
-        source.buffer = audioBuffers[noteId];
+        source.buffer = audioBuffers[choice];
         source.connect(audioCtx.destination);
         source.start(0);
-    }
-
-    function replaySound() { if (currentTarget) { playSound(currentTarget); startTimer(); } }
-
-    function startTimer() {
-        if (isTestRound) return; 
-        clearInterval(timerInterval);
-        timeLeft = 10;
-        document.getElementById('timer-text').innerText = `Time: ${timeLeft}s`;
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            document.getElementById('timer-text').innerText = `Time: ${timeLeft}s`;
-            if (timeLeft <= 0) handleTimeout();
-        }, 1000);
-    }
-
-    function stopTimer() { clearInterval(timerInterval); document.getElementById('timer-text').innerText = ""; }
-
-    function handleTimeout() { stopTimer(); document.getElementById('msg').innerText = "Too slow! ⏰"; processWrong(); }
-
-    function prepareRound() {
-        activeGamePool = getSelectedPool();
-        if (activeGamePool.length === 0) {
-            alert("Please select at least one solfege sound to build your target pool!");
-            return;
-        }
-
-        isGameActive = true;
-        isTestRound = true;
-        streak = 0;
-        
-        document.getElementById('play-btn').style.display = "none";
-        document.getElementById('replay-btn').style.display = "none"; 
-        document.getElementById('begin-round-btn').style.display = "block";
-        
-        document.getElementById('mode-label').innerText = "Practice Round";
-        document.getElementById('mode-label').className = "mode-tag test-round";
-        
-        updateUI();
-        document.getElementById('msg').innerText = `Practice pressing your selection pool options before starting!`;
-    }
-
-    function startActualGame() {
-        isTestRound = false;
-        document.getElementById('begin-round-btn').style.display = "none";
-        document.getElementById('replay-btn').style.display = "block";
-        document.getElementById('mode-label').innerText = "Game Mode";
-        document.getElementById('mode-label').className = "mode-tag game-on";
-        
-        nextQuestion();
-    }
-
-    function nextQuestion() {
-        const choice = activeGamePool[Math.floor(Math.random() * activeGamePool.length)];
-        currentTarget = choice;
-        playSound(currentTarget);
-        document.getElementById('msg').innerText = "Which solfege swatch sound was that?";
-        startTimer();
-    }
-
-    function handleInput(choice) {
-        if (isGameActive && !activeGamePool.includes(choice)) return;
-
-        playSound(choice);
-
-        if (!isGameActive || isTestRound) {
-            if(isTestRound) {
-                const noteObj = progression.find(n => n.id === choice);
-                document.getElementById('msg').innerText = "Practice: " + noteObj.solfege;
-            }
-            return;
-        }
-
-        if (choice === currentTarget) {
-            stopTimer();
-            streak++;
-            document.getElementById('msg').innerText = "Correct! ✨";
-            
-            if (streak >= 10) {
-                document.getElementById('msg').innerText = "ROUND COMPLETED! Fantastic listening skills!";
-                isGameActive = false;
-                setTimeout(() => location.reload(), 2500);
-            } else {
-                updateUI();
-                setTimeout(nextQuestion, 800);
-            }
-        } else {
-            stopTimer();
-            processWrong();
-        }
-    }
-
-    function processWrong() {
-        strikes++; streak = 0; updateUI();
-        if (strikes >= 3) { 
-            document.getElementById('msg').innerText = "GAME OVER";
-            setTimeout(() => location.reload(), 2000); 
-        }
-        else { setTimeout(nextQuestion, 1500); }
-    }
-
-    function updateUI() {
-        document.getElementById('streak').innerText = streak;
-        document.getElementById('strikes').innerText = strikes;
-        document.getElementById('progress-bar').style.width = (streak * 10) + "%";
     }
 </script>
 </body>
