@@ -90,23 +90,44 @@
 
         #msg { font-weight: 600; color: #94a3b8; min-height: 1.5rem; text-align: center; margin-bottom: 20px; font-size: 1.1rem; }
 
-        /* --- STABLE SQUARE GEOMETRY BOARD GRID --- */
+        /* --- ONE-OCTAVE SPAN SCROLLING VIEWPORT CONTAINER --- */
         .keyboard-wrapper {
             background-color: var(--keyboard-bg);
             padding: 25px;
             border-radius: 20px;
             width: 100%;
+            /* Limits view width to exactly 8 natural keys + gaps to form one clear octave span */
+            max-width: 650px; 
             overflow-x: auto;
-            display: flex;
-            justify-content: center;
+            overflow-y: hidden;
+            display: block;
+            -webkit-overflow-scrolling: touch; /* Smooth iOS swipe support */
+            border: 2px solid #334155;
+        }
+
+        /* Customize scrollbar look to fit the dark theme beautifully */
+        .keyboard-wrapper::-webkit-scrollbar {
+            height: 10px;
+        }
+        .keyboard-wrapper::-webkit-scrollbar-track {
+            background: #0b0f19;
+            border-radius: 10px;
+        }
+        .keyboard-wrapper::-webkit-scrollbar-thumb {
+            background: #38bdf8;
+            border-radius: 10px;
+        }
+        .keyboard-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #0ea5e9;
         }
 
         .piano-grid {
             position: relative;
             display: grid;
-            grid-template-columns: repeat(15, 70px); /* Expanded to 15 tracking slots wide */
+            grid-template-columns: repeat(15, 70px); 
             gap: 10px;
             width: max-content;
+            padding-bottom: 5px;
         }
 
         .sharps-layer {
@@ -126,7 +147,7 @@
             display: contents;
         }
 
-        /* Square Blocks Styling */
+        /* Proportional Square Blocks Styling */
         .bell-btn {
             border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
@@ -151,12 +172,12 @@
         .bell-btn:active { transform: scale(0.92); }
         .bell-btn.dimmed { filter: grayscale(80%) brightness(30%); opacity: 0.4; pointer-events: none; }
 
-        /* Spacing for base layer */
+        /* Push bottom natural squares row below top row */
         .naturals-layer .bell-btn {
             margin-top: 85px; 
         }
         
-        /* Strict Alignment offsets over grid gaps */
+        /* Direct Layout Alignments over tracking columns */
         #btn-Bb3  { grid-column: 1; margin-left: 40px; }
         #btn-Db4  { grid-column: 3; margin-left: 40px; }
         #btn-Eb4  { grid-column: 4; margin-left: 40px; }
@@ -168,7 +189,7 @@
         #btn-Gb5  { grid-column: 13; margin-left: 40px; }
         #btn-Ab5  { grid-column: 14; margin-left: 40px; }
 
-        /* --- IDENTICAL INTER-OCTAVE PRODIGIES HEX COLORS --- */
+        /* --- PRODIGIES COLOR COORDINATION SPECTRIC INDEX --- */
         .bell-btn.C4, .bell-btn.C5   { background-color: #d62828; } 
         .bell-btn.Db4, .bell-btn.Db5 { background-color: #e65c40; } 
         .bell-btn.D4, .bell-btn.D5   { background-color: #f3722c; } 
@@ -202,6 +223,7 @@
 
         <div id="msg">Loading audio components... Please wait.</div>
 
+        <!-- SCROLLABLE KEYBOARD INNER CONTAINER VIEWPORT -->
         <div class="keyboard-wrapper">
             <div class="piano-grid">
                 <div class="sharps-layer" id="sharps-container"></div>
@@ -215,7 +237,6 @@
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioCtx = new AudioContext();
     
-    // Comprehensive dictionary containing your extended register notes
     const progression = [
         { id: "A3",  solfege: "La 3", file: "La 3.wav", type: "white", style: "A3" },
         { id: "Bb3", solfege: "Te 3", file: "Te 3.wav", type: "black", style: "Bb3" },
@@ -279,10 +300,10 @@
                 const arrayBuffer = await response.arrayBuffer();
                 audioBuffers[note.id] = await audioCtx.decodeAudioData(arrayBuffer);
             } catch (error) {
-                console.error(`Missing audio file or fetch error on: ${note.file}`, error);
+                console.error(`Audio track pipeline breakdown on: ${note.file}`, error);
             }
         }
-        document.getElementById('msg').innerText = "Tap any active square to play the sound instantly!";
+        document.getElementById('msg').innerText = "Swipe/Scroll left or right to switch octaves! Tap keys to play.";
     }
     loadAllSounds();
 
