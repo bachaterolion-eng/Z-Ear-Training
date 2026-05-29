@@ -1,3 +1,4 @@
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -148,7 +149,7 @@
         }
 
         .bell-btn {
-            border: 1px solid rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 0, 0, 0.2);
             cursor: pointer;
             display: flex;
             align-items: flex-end;
@@ -156,48 +157,71 @@
             position: relative;
             transition: filter 0.2s, transform 0.05s, box-shadow 0.05s;
             pointer-events: auto;
-            color: #ffffff;
-            font-weight: 800;
-            font-size: 0.8rem;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
-            text-align: center;
             padding-bottom: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
         
-        /* Piano Styling for White Keys */
+        /* Traditional White Keys Styling */
         .naturals-layer .bell-btn {
             height: 232px;
+            background: linear-gradient(to bottom, #eeeeee 0%, #ffffff 100%);
             border-radius: 0 0 7px 7px;
-            border-bottom: 4px solid rgba(0,0,0,0.4);
+            box-shadow: inset 0 2px 3px #ffffff, 0 4px 6px rgba(0,0,0,0.25);
+            border-bottom: 4px solid #cccccc;
         }
 
-        /* Piano Styling for Black Keys */
+        /* Traditional Black Keys Styling */
         .sharps-layer .bell-btn {
             height: 145px;
             width: 38px;
-            border-radius: 0 0 4px 4px;
+            background: linear-gradient(to bottom, #333333 0%, #111111 100%);
+            border-radius: 0 0 5px 5px;
             z-index: 3;
-            font-size: 0.75rem;
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.2), 2px 4px 8px rgba(0,0,0,0.5);
+            border-bottom: 5px solid #000000;
             padding-bottom: 10px;
-            box-shadow: 2px 4px 8px rgba(0,0,0,0.6);
-            border-bottom: 5px solid rgba(0,0,0,0.5);
         }
 
         .naturals-layer .bell-btn:active { 
             transform: translateY(2px);
             border-bottom-width: 1px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.2);
+            background: #f5f5f5;
         }
 
         .sharps-layer .bell-btn:active {
             transform: translateY(2px);
             border-bottom-width: 2px;
-            box-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            background: #222222;
         }
 
         .bell-btn.dimmed { filter: grayscale(80%) brightness(20%); opacity: 0.2; pointer-events: none; }
         
+        /* Centered Colored Solfege Square Badge */
+        .color-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.75rem;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 0 auto;
+        }
+
+        /* Slightly smaller square badge for the black keys */
+        .sharps-layer .color-badge {
+            width: 32px;
+            height: 32px;
+            font-size: 0.65rem;
+            border-radius: 6px;
+        }
+
         /* Piano layout spacing configurations for accidental positions */
         #btn-Ab3  { grid-column: 1; margin-left: 38px; }
         #btn-Bb3  { grid-column: 2; margin-left: 38px; }
@@ -210,19 +234,19 @@
         #btn-Eb5  { grid-column: 12; margin-left: 38px; }
         #btn-Gb5  { grid-column: 14; margin-left: 38px; }
 
-        /* Original Color Identity preserved perfectly */
-        .bell-btn.G3,  .bell-btn.G4,  .bell-btn.G5   { background: linear-gradient(to bottom, #3a6d6b, #4d908e); } 
-        .bell-btn.Ab3, .bell-btn.Ab4, .bell-btn.Ab5  { background: linear-gradient(to bottom, #1d5f7a, #277da1); } 
-        .bell-btn.A3,  .bell-btn.A4                  { background: linear-gradient(to bottom, #513970, #6a4c93); } 
-        .bell-btn.Bb3, .bell-btn.Bb4                 { background: linear-gradient(to bottom, #654e80, #8367a6); } 
-        .bell-btn.B3,  .bell-btn.B4                  { background: linear-gradient(to bottom, #c4436e, #f35b8c); } 
-        .bell-btn.C4,  .bell-btn.C5                  { background: linear-gradient(to bottom, #ab1f1f, #d62828); } 
-        .bell-btn.Db4, .bell-btn.Db5                 { background: linear-gradient(to bottom, #bd4931, #e65c40); } 
-        .bell-btn.D4,  .bell-btn.D5                  { background: linear-gradient(to bottom, #c75b20, #f3722c); } 
-        .bell-btn.Eb4, .bell-btn.Eb5                 { background: linear-gradient(to bottom, #cca23c, #f9c74f); } 
-        .bell-btn.E4,  .bell-btn.E5                  { background: linear-gradient(to bottom, #cca60f, #f9cd13); } 
-        .bell-btn.F4,  .bell-btn.F5                  { background: linear-gradient(to bottom, #729955, #90be6d); } 
-        .bell-btn.Gb4, .bell-btn.Gb5                 { background: linear-gradient(to bottom, #32826a, #43aa8b); } 
+        /* Exact Original Tone Palette Mapped into the Inner Badges */
+        .bell-btn.G3 .color-badge,  .bell-btn.G4 .color-badge,  .bell-btn.G5 .color-badge   { background: linear-gradient(to bottom, #3a6d6b, #4d908e); } 
+        .bell-btn.Ab3 .color-badge, .bell-btn.Ab4 .color-badge, .bell-btn.Ab5 .color-badge  { background: linear-gradient(to bottom, #1d5f7a, #277da1); } 
+        .bell-btn.A3 .color-badge,  .bell-btn.A4 .color-badge                  { background: linear-gradient(to bottom, #513970, #6a4c93); } 
+        .bell-btn.Bb3 .color-badge, .bell-btn.Bb4 .color-badge                 { background: linear-gradient(to bottom, #654e80, #8367a6); } 
+        .bell-btn.B3 .color-badge,  .bell-btn.B4 .color-badge                  { background: linear-gradient(to bottom, #c4436e, #f35b8c); } 
+        .bell-btn.C4 .color-badge,  .bell-btn.C5 .color-badge                  { background: linear-gradient(to bottom, #ab1f1f, #d62828); } 
+        .bell-btn.Db4 .color-badge, .bell-btn.Db5 .color-badge                 { background: linear-gradient(to bottom, #bd4931, #e65c40); } 
+        .bell-btn.D4 .color-badge,  .bell-btn.D5 .color-badge                  { background: linear-gradient(to bottom, #c75b20, #f3722c); } 
+        .bell-btn.Eb4 .color-badge, .bell-btn.Eb5 .color-badge                 { background: linear-gradient(to bottom, #cca23c, #f9c74f); } 
+        .bell-btn.E4 .color-badge,  .bell-btn.E5 .color-badge                  { background: linear-gradient(to bottom, #cca60f, #f9cd13); } 
+        .bell-btn.F4 .color-badge,  .bell-btn.F5 .color-badge                  { background: linear-gradient(to bottom, #729955, #90be6d); } 
+        .bell-btn.Gb4 .color-badge, .bell-btn.Gb5 .color-badge                 { background: linear-gradient(to bottom, #32826a, #43aa8b); } 
     </style>
 </head>
 <body>
@@ -296,7 +320,9 @@
         btn.className = `bell-btn ${note.style}`;
         btn.id = `btn-${note.id}`;
         btn.setAttribute('onclick', `handleInput('${note.id}')`);
-        btn.innerHTML = `<div>${note.solfege}</div>`;
+        
+        // Injects the clean color badge system inside each traditional key
+        btn.innerHTML = `<div class="color-badge">${note.solfege}</div>`;
 
         if (note.type === "black") {
             sharpsRow.appendChild(btn);
