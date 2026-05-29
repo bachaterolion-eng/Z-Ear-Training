@@ -258,7 +258,7 @@
         { id: "Ab4", solfege: "Si 4", mp3File: "Si 4.mp3", wavFile: "Si 4.wav", type: "black", style: "Ab4" },
         { id: "A4",  solfege: "La 4", mp3File: "La 4.mp3", wavFile: "La 4.wav", type: "white", style: "A4" },
         { id: "Bb4", solfege: "Te 4", mp3File: "Te 4.mp3", wavFile: "Te 4.wav", type: "black", style: "Bb4" },
-        { id: "B4",  solfege: "Ti 4", mp3File: "Ti 4.wav", type: "white", style: "B4" },
+        { id: "B4",  solfege: "Ti 4", mp3File: "Ti 4.mp3", wavFile: "Ti 4.wav", type: "white", style: "B4" },
         { id: "C5",  solfege: "Do 5", mp3File: "Do 5.mp3", wavFile: "Do 5.wav", type: "white", style: "C5" },
         { id: "Db5", solfege: "Di 5", mp3File: "Di 5.mp3", wavFile: "Di 5.wav", type: "black", style: "Db5" },
         { id: "D5",  solfege: "Re 5", mp3File: "Re 5.mp3", wavFile: "Re 5.wav", type: "white", style: "D5" },
@@ -298,7 +298,6 @@
         checkboxGrid.appendChild(label);
     });
 
-    // Helper to safely fetch and decode audio files
     async function fetchAudioBuffer(url) {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP error ${response.status}`);
@@ -308,20 +307,18 @@
 
     async function loadAllSounds() {
         for (let note of progression) {
-            // Preload MP3
             try {
                 mp3Buffers[note.id] = await fetchAudioBuffer(note.mp3File);
             } catch (error) {
-                console.warn(`Could not load ${note.mp3File}, skipping bell sound layer for this note.`);
+                console.warn(`Note details specified in Screenshot 2026-05-29 at 2.40.14 PM.png missing for ${note.mp3File}.`);
             }
-            // Preload WAV
             try {
                 wavBuffers[note.id] = await fetchAudioBuffer(note.wavFile);
             } catch (error) {
                 console.error(`Crucial failure loading vocal file: ${note.wavFile}`, error);
             }
         }
-        document.getElementById('msg').innerText = "Ready! Tap keys to hear the bell followed by the vocal sound.";
+        document.getElementById('msg').innerText = "Ready! Tap keys to hear the bell and voice immediately following.";
     }
     loadAllSounds();
 
@@ -353,25 +350,25 @@
         }
 
         const now = audioCtx.currentTime;
-        let delay = 0;
+        
+        // Immediate snappy gap override (0.25 seconds instead of the full sample tail)
+        const overlapTiming = 0.25; 
 
-        // 1. Play the MP3 Bell Sound first (if available)
         if (mp3Buffers[choice]) {
             const mp3Source = audioCtx.createBufferSource();
             mp3Source.buffer = mp3Buffers[choice];
             mp3Source.connect(audioCtx.destination);
             mp3Source.start(now);
-            
-            // Calculate precisely when the bell sound ends
-            delay = mp3Buffers[choice].duration;
         }
 
-        // 2. Play the WAV Vocal Sound right after the bell finish line
         if (wavBuffers[choice]) {
             const wavSource = audioCtx.createBufferSource();
             wavSource.buffer = wavBuffers[choice];
             wavSource.connect(audioCtx.destination);
-            wavSource.start(now + delay);
+            
+            // If the bell layer loaded successfully, play voice 0.25s after. Else, play instantly.
+            const voiceStartTime = mp3Buffers[choice] ? (now + overlapTiming) : now;
+            wavSource.start(voiceStartTime);
         }
     }
 </script>
