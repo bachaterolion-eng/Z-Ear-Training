@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHROMACHORDS - Prodigies Keyboard</title>
+    <title>CHROMACHORDS - Chromatic Solfege Keyboard</title>
     <style>
         * { box-sizing: border-box; }
         :root {
@@ -26,7 +26,7 @@
             padding: 20px;
         }
 
-        .container { width: 100%; max-width: 1000px; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 1050px; display: flex; flex-direction: column; align-items: center; }
 
         h1 { color: #38bdf8; font-size: 2.2rem; text-align: center; margin: 10px 0 5px 0; width: 100%; letter-spacing: 2px; }
 
@@ -60,16 +60,58 @@
         .mode-tag.game-on { background: #f59e0b; color: #1e293b; }
         .mode-tag.test-round { background: #6366f1; color: #ffffff; }
 
-        .level-select-container { margin-bottom: 15px; color: #cbd5e1; font-weight: 700; font-size: 0.9rem; }
-        #level-select { 
-            padding: 5px 10px; 
-            border-radius: 10px; 
-            border: 2px solid #334155; 
-            background: #0f172a;
+        /* --- SELECTION POOL CHECKBOX AREA --- */
+        .selection-panel {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            width: 100%;
+            border: 1px solid #334155;
+        }
+        .selection-title {
+            font-size: 0.9rem;
             font-weight: 700;
+            text-transform: uppercase;
             color: #38bdf8;
+            margin-bottom: 10px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        .pool-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+        .pool-btn {
+            background: #334155;
+            color: #ffffff;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
             cursor: pointer;
         }
+        .pool-btn:hover { background: #475569; }
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+            gap: 8px;
+            max-height: 120px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            user-select: none;
+        }
+        .check-item input { cursor: pointer; }
 
         .progress-container { width: 100%; max-width: 500px; height: 12px; background-color: var(--progress-bg); border-radius: 10px; margin-bottom: 5px; overflow: hidden; }
         .progress-bar { height: 100%; width: 0%; background-color: var(--progress-fill); transition: width 0.3s; }
@@ -92,7 +134,7 @@
             padding: 20px;
             border-radius: 20px;
             width: 100%;
-            overflow-x: auto; /* Scrollable if screen is too small */
+            overflow-x: auto;
             display: flex;
             justify-content: center;
         }
@@ -100,12 +142,11 @@
         .piano-grid {
             position: relative;
             display: grid;
-            grid-template-columns: repeat(12, 65px); /* 12 White keys total from A3 to E5 */
-            gap: 5px;
+            grid-template-columns: repeat(12, 68px); /* 12 white-key blocks wide */
+            gap: 6px;
             width: max-content;
         }
 
-        /* Row designations */
         .sharps-layer {
             position: absolute;
             top: 0;
@@ -113,108 +154,82 @@
             width: 100%;
             height: 110px;
             z-index: 2;
-            pointer-events: none; /* Let clicks pass through empty spaces */
+            pointer-events: none;
             display: grid;
-            grid-template-columns: repeat(12, 65px);
-            gap: 5px;
+            grid-template-columns: repeat(12, 68px);
+            gap: 6px;
         }
 
         .naturals-layer {
-            display: contents; /* Behaves as direct grid children */
+            display: contents;
         }
 
-        /* Bell Buttons Base */
+        /* Swatch Key Box Styles */
         .bell-btn {
-            border: none;
-            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             padding: 10px 2px;
             position: relative;
-            transition: transform 0.1s, opacity 0.2s;
+            transition: transform 0.1s, filter 0.2s;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            pointer-events: auto; /* Re-enable clicks inside layers */
+            pointer-events: auto;
             background-color: #1e293b;
-            opacity: 0.25; /* Dimmed when locked/inactive */
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.6);
         }
         
-        .bell-btn.active { opacity: 1; }
         .bell-btn:active { transform: scale(0.95); }
+        .bell-btn.dimmed { filter: grayscale(80%) brightness(35%); opacity: 0.5; }
 
-        /* Naturals Row Sizing */
+        /* Key Layer Layout Parameters */
         .naturals-layer .bell-btn {
             height: 160px;
-            margin-top: 105px; /* Leave room above for sharp layout overlap */
+            margin-top: 105px;
         }
 
-        /* Sharps Row Sizing and precise layout offsets over white key gaps */
         .sharps-layer .bell-btn {
             height: 100px;
             grid-column-end: span 2;
-            width: 50px;
+            width: 52px;
         }
         
-        /* Absolute offsets alignments to position black keys directly over dividers */
-        #btn-Bb3  { grid-column: 1; margin-left: 40px; }
-        #btn-Db4  { grid-column: 3; margin-left: 40px; }
-        #btn-Eb4  { grid-column: 4; margin-left: 40px; }
-        #btn-Fb4  { display: none; } /* No structural sharp between E and F */
-        #btn-Gb4  { grid-column: 6; margin-left: 40px; }
-        #btn-Ab4  { grid-column: 7; margin-left: 40px; }
-        #btn-Bb4  { grid-column: 8; margin-left: 40px; }
-        #btn-Db5  { grid-column: 10; margin-left: 40px; }
-        #btn-Eb5  { grid-column: 11; margin-left: 40px; }
+        #btn-Bb3  { grid-column: 1; margin-left: 42px; }
+        #btn-Db4  { grid-column: 3; margin-left: 42px; }
+        #btn-Eb4  { grid-column: 4; margin-left: 42px; }
+        #btn-Gb4  { grid-column: 6; margin-left: 42px; }
+        #btn-Ab4  { grid-column: 7; margin-left: 42px; }
+        #btn-Bb4  { grid-column: 8; margin-left: 42px; }
+        #btn-Db5  { grid-column: 10; margin-left: 42px; }
+        #btn-Eb5  { grid-column: 11; margin-left: 42px; }
 
-        /* Decorative Bell Typography and Cap Graphics */
-        .bell-cap {
-            background: #000000;
-            color: #ffffff;
-            font-size: 0.65rem;
-            font-weight: 800;
-            padding: 2px 5px;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.4);
-            text-align: center;
-            min-width: 28px;
-        }
-        .naturals-layer .bell-cap {
-            background: #ffffff;
-            color: #000000;
-            font-size: 0.75rem;
-            border: 1px solid rgba(0,0,0,0.3);
-        }
-
-        .bell-emoji { font-size: 1.8rem; line-height: 1; }
-        .sharps-layer .bell-emoji { font-size: 1.4rem; }
-
-        /* --- PRODIGIES IDENTICAL COLOR PALETTE --- */
-        /* Naturals */
-        .bell-btn.active.A3 { background-color: #5b448a; } /* Deep Purple */
-        .bell-btn.active.B3 { background-color: #d1528b; } /* Pink-Magenta */
-        .bell-btn.active.C4 { background-color: #dc2626; } /* Primary Red */
-        .bell-btn.active.D4 { background-color: #ea580c; } /* Vivid Orange */
-        .bell-btn.active.E4 { background-color: #eab308; } /* Bright Yellow */
-        .bell-btn.active.F4 { background-color: #65a30d; } /* Yellow-Green */
-        .bell-btn.active.G4 { background-color: #0d9488; } /* Teal-Blue */
-        .bell-btn.active.A4 { background-color: #7c3aed; } /* True Purple */
-        .bell-btn.active.B4 { background-color: #ec4899; } /* Light Pink */
-        .bell-btn.active.C5 { background-color: #be123c; } /* Crimson/Darker Red */
-        .bell-btn.active.D5 { background-color: #f97316; } /* Light Orange/Apricot */
-        .bell-btn.active.E5 { background-color: #84cc16; } /* Lime Green */
-
-        /* Sharps / Flats (Muted/Deep tones matching background cards) */
-        .bell-btn.active.Bb3 { background-color: #704d8c; }
-        .bell-btn.active.Db4 { background-color: #cd5a43; }
-        .bell-btn.active.Eb4 { background-color: #e3be54; }
-        .bell-btn.active.Gb4 { background-color: #559c74; }
-        .bell-btn.active.Ab4 { background-color: #3b7bb8; }
-        .bell-btn.active.Bb4 { background-color: #825e9c; }
-        .bell-btn.active.Db5 { background-color: #c2410c; }
-        .bell-btn.active.Eb5 { background-color: #ca8a04; }
-
+        /* --- PRODIGIES BOX COLOR SYSTEM --- */
+        .bell-btn.A3  { background-color: #5b448a; } 
+        .bell-btn.Bb3 { background-color: #704d8c; }
+        .bell-btn.B3  { background-color: #d1528b; } 
+        .bell-btn.C4  { background-color: #dc2626; } 
+        .bell-btn.Db4 { background-color: #cd5a43; }
+        .bell-btn.D4  { background-color: #ea580c; } 
+        .bell-btn.Eb4 { background-color: #e3be54; }
+        .bell-btn.E4  { background-color: #eab308; } 
+        .bell-btn.F4  { background-color: #65a30d; } 
+        .bell-btn.Gb4 { background-color: #559c74; }
+        .bell-btn.G4  { background-color: #0d9488; } 
+        .bell-btn.Ab4 { background-color: #3b7bb8; }
+        .bell-btn.A4  { background-color: #7c3aed; } 
+        .bell-btn.Bb4 { background-color: #825e9c; }
+        .bell-btn.B4  { background-color: #ec4899; } 
+        .bell-btn.C5  { background-color: #be123c; } 
+        .bell-btn.Db5 { background-color: #c2410c; }
+        .bell-btn.D5  { background-color: #f97316; } 
+        .bell-btn.Eb5 { background-color: #ca8a04; }
+        .bell-btn.E5  { background-color: #84cc16; }
     </style>
 </head>
 <body>
@@ -228,12 +243,16 @@
     </div>
 
     <div class="game-panel">
-        <div id="mode-label" class="mode-tag">Test Mode</div>
+        <div id="mode-label" class="mode-tag">Explore Mode</div>
         
-        <div class="level-select-container" id="selector-box">
-            Start at Level: 
-            <select id="level-select" onchange="changeStartingLevel()">
-                </select>
+        <div class="selection-panel" id="pool-selector-zone">
+            <div class="selection-title">Choose Game Sound Selection Pool</div>
+            <div class="pool-controls">
+                <button class="pool-btn" onclick="setPoolPreset('all')">Select All</button>
+                <button class="pool-btn" onclick="setPoolPreset('naturals')">Naturals Only</button>
+                <button class="pool-btn" onclick="setPoolPreset('sharps')">Sharps Only</button>
+            </div>
+            <div class="checkbox-grid" id="checkbox-container"></div>
         </div>
 
         <div class="progress-container"><div id="progress-bar" class="progress-bar"></div></div>
@@ -254,34 +273,30 @@
 </div>
 
 <script>
-    // Audio Context Setup
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    
-    // Complete note dictionary linking frequencies (MIDI math equivalents)
+    // System Definition Array
     const progression = [
-        { id: "A3",  label: "A",     freq: 220.00, type: "white", style: "A3" },
-        { id: "Bb3", label: "A#/Bb", freq: 233.08, type: "black", style: "Bb3" },
-        { id: "B3",  label: "B",     freq: 246.94, type: "white", style: "B3" },
-        { id: "C4",  label: "C",     freq: 261.63, type: "white", style: "C4" },
-        { id: "Db4", label: "C#/Db", freq: 277.18, type: "black", style: "Db4" },
-        { id: "D4",  label: "D",     freq: 293.66, type: "white", style: "D4" },
-        { id: "Eb4", label: "D#/Eb", freq: 311.13, type: "black", style: "Eb4" },
-        { id: "E4",  label: "E",     freq: 329.63, type: "white", style: "E4" },
-        { id: "F4",  label: "F",     freq: 349.23, type: "white", style: "F4" },
-        { id: "Gb4", label: "F#/Gb", freq: 369.99, type: "black", style: "Gb4" },
-        { id: "G4",  label: "G",     freq: 392.00, type: "white", style: "G4" },
-        { id: "Ab4", label: "G#/Ab", freq: 415.30, type: "black", style: "Ab4" },
-        { id: "A4",  label: "A",     freq: 440.00, type: "white", style: "A4" },
-        { id: "Bb4", label: "A#/Bb", freq: 466.16, type: "black", style: "Bb4" },
-        { id: "B4",  label: "B",     freq: 493.88, type: "white", style: "B4" },
-        { id: "C5",  label: "C",     freq: 523.25, type: "white", style: "C5" },
-        { id: "Db5", label: "C#/Db", freq: 554.37, type: "black", style: "Db5" },
-        { id: "D5",  label: "d",     freq: 587.33, type: "white", style: "D5" },
-        { id: "Eb5", label: "d#/e*", freq: 622.25, type: "black", style: "Eb5" },
-        { id: "E5",  label: "e",     freq: 659.25, type: "white", style: "E5" }
+        { id: "A3",  solfege: "La 3", file: "La 3.wav", type: "white", style: "A3" },
+        { id: "Bb3", solfege: "Te 3", file: "Te 3.wav", type: "black", style: "Bb3" },
+        { id: "B3",  solfege: "Ti 3", file: "Ti 3.wav", type: "white", style: "B3" },
+        { id: "C4",  solfege: "Do 4", file: "Do 4.wav", type: "white", style: "C4" },
+        { id: "Db4", solfege: "Di 4", file: "Di 4.wav", type: "black", style: "Db4" },
+        { id: "D4",  solfege: "Re 4", file: "Re 4.wav", type: "white", style: "D4" },
+        { id: "Eb4", solfege: "Me 4", file: "Me 4.wav", type: "black", style: "Eb4" },
+        { id: "E4",  solfege: "Mi 4", file: "Mi 4.wav", type: "white", style: "E4" },
+        { id: "F4",  solfege: "Fa 4", file: "Fa 4.wav", type: "white", style: "F4" },
+        { id: "Gb4", solfege: "Fi 4", file: "Fi 4.wav", type: "black", style: "Gb4" },
+        { id: "G4",  solfege: "So 4", file: "So 4.wav", type: "white", style: "G4" },
+        { id: "Ab4", solfege: "Si 4", file: "Si 4.wav", type: "black", style: "Ab4" },
+        { id: "A4",  solfege: "La 4", file: "La 4.wav", type: "white", style: "A4" },
+        { id: "Bb4", solfege: "Te 4", file: "Te 4.wav", type: "black", style: "Bb4" },
+        { id: "B4",  solfege: "Ti 4", file: "Ti 4.wav", type: "white", style: "B4" },
+        { id: "C5",  solfege: "Do 5", file: "Do 5.wav", type: "white", style: "C5" },
+        { id: "Db5", solfege: "Di 5", file: "Di 5.wav", type: "black", style: "Db5" },
+        { id: "D5",  solfege: "Re 5", file: "Re 5.wav", type: "white", style: "D5" },
+        { id: "Eb5", solfege: "Me 5", file: "Me 5.wav", type: "black", style: "Eb5" },
+        { id: "E5",  solfege: "Mi 5", file: "Mi 5.wav", type: "white", style: "E5" }
     ];
     
-    let gameLevel = 1; 
     let streak = 0;
     let strikes = 0;
     let currentTarget = null;
@@ -289,67 +304,77 @@
     let isTestRound = false; 
     let timeLeft = 10;
     let timerInterval = null;
+    let activeGamePool = [];
 
-    // Dynamically render the keyboard arrangement matching image layout
     const sharpsRow = document.getElementById('sharps-container');
     const naturalsRow = document.getElementById('naturals-container');
+    const checkboxGrid = document.getElementById('checkbox-container');
 
+    // Build the visual swatches and layout configuration
     progression.forEach((note) => {
+        // Create key block
         const btn = document.createElement('button');
         btn.className = `bell-btn ${note.style}`;
         btn.id = `btn-${note.id}`;
         btn.setAttribute('onclick', `handleInput('${note.id}')`);
-        btn.innerHTML = `
-            <div class="bell-cap">${note.label}</div>
-            <div class="bell-emoji">🔔</div>
-            <div></div>
-        `;
+        btn.innerHTML = `<div>${note.solfege}</div>`;
 
         if (note.type === "black") {
             sharpsRow.appendChild(btn);
         } else {
             naturalsRow.appendChild(btn);
         }
+
+        // Create configuration selector checkboxes
+        const label = document.createElement('label');
+        label.className = 'check-item';
+        label.innerHTML = `
+            <input type="checkbox" value="${note.id}" checked id="chk-${note.id}" onchange="syncPoolUI()">
+            <span>${note.solfege}</span>
+        `;
+        checkboxGrid.appendChild(label);
     });
 
-    // Setup level selection box elements
-    const selector = document.getElementById('level-select');
-    progression.forEach((note, i) => {
-        let opt = document.createElement('option');
-        opt.value = i + 1;
-        opt.innerHTML = `Level ${i + 1} (${note.id})`;
-        selector.appendChild(opt);
-    });
-
-    function changeStartingLevel() {
-        if (!isGameActive) {
-            gameLevel = parseInt(selector.value);
-            updateUI();
-        }
+    function syncPoolUI() {
+        progression.forEach(note => {
+            const chk = document.getElementById(`chk-${note.id}`);
+            const btn = document.getElementById(`btn-${note.id}`);
+            if (chk.checked) {
+                btn.classList.remove('dimmed');
+            } else {
+                btn.classList.add('dimmed');
+            }
+        });
     }
 
-    // Mathematical Programmatic Synthesizer Function (Replaces missing WAV files gracefully)
+    function setPoolPreset(type) {
+        progression.forEach(note => {
+            const chk = document.getElementById(`chk-${note.id}`);
+            if (type === 'all') chk.checked = true;
+            if (type === 'naturals') chk.checked = (note.type === 'white');
+            if (type === 'sharps') chk.checked = (note.type === 'black');
+        });
+        syncPoolUI();
+    }
+
+    function getSelectedPool() {
+        let selected = [];
+        progression.forEach(note => {
+            if (document.getElementById(`chk-${note.id}`).checked) {
+                selected.push(note.id);
+            }
+        });
+        return selected;
+    }
+
+    // Audio Player Engine Execution
     function playSound(noteId) {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
         const noteConfig = progression.find(n => n.id === noteId);
         if (!noteConfig) return;
-
-        const osc = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
         
-        // Bell timbre optimization (Sine foundation with a high harmonic chime ring)
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(noteConfig.freq, audioCtx.currentTime);
-        
-        // Quick transient percussion strike envelope shape
-        gainNode.gain.setValueAtTime(0.6, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
-        
-        osc.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        
-        osc.start();
-        osc.stop(audioCtx.currentTime + 1.2);
+        // Native browser instantiation utilizing your file structure
+        const snd = new Audio(noteConfig.file);
+        snd.play().catch(e => console.log("Audio asset loader context exception:", e));
     }
 
     function replaySound() { if (currentTarget) { playSound(currentTarget); startTimer(); } }
@@ -371,6 +396,12 @@
     function handleTimeout() { stopTimer(); document.getElementById('msg').innerText = "Too slow! ⏰"; processWrong(); }
 
     function prepareRound() {
+        activeGamePool = getSelectedPool();
+        if (activeGamePool.length === 0) {
+            alert("Please select at least one solfege sound to build your target pool!");
+            return;
+        }
+
         isGameActive = true;
         isTestRound = true;
         streak = 0;
@@ -378,15 +409,13 @@
         document.getElementById('play-btn').style.display = "none";
         document.getElementById('replay-btn').style.display = "none"; 
         document.getElementById('begin-round-btn').style.display = "block";
-        document.getElementById('selector-box').style.display = "none";
+        document.getElementById('pool-selector-zone').style.with = "100%";
         
-        document.getElementById('mode-label').innerText = "Practice Round: Try the layout!";
+        document.getElementById('mode-label').innerText = "Practice Round: Try your active sounds!";
         document.getElementById('mode-label').className = "mode-tag test-round";
         
         updateUI();
-        
-        const newNote = progression[gameLevel - 1];
-        document.getElementById('msg').innerText = `Level ${gameLevel}: Play target note ${newNote.id} to practice!`;
+        document.getElementById('msg').innerText = `Practice pressing your selection pool options before starting!`;
     }
 
     function startActualGame() {
@@ -400,23 +429,23 @@
     }
 
     function nextQuestion() {
-        const available = progression.slice(0, gameLevel);
-        const choiceObj = available[Math.floor(Math.random() * available.length)];
-        currentTarget = choiceObj.id;
+        const choice = activeGamePool[Math.floor(Math.random() * activeGamePool.length)];
+        currentTarget = choice;
         playSound(currentTarget);
-        document.getElementById('msg').innerText = "Which bell note was that?";
+        document.getElementById('msg').innerText = "Which solfege swatch sound was that?";
         startTimer();
     }
 
     function handleInput(choice) {
-        const btn = document.getElementById(`btn-${choice}`);
-        if (!btn.classList.contains('active')) return;
+        // Disallow dim/deselected choices during active gameplay loops
+        if (isGameActive && !activeGamePool.includes(choice)) return;
 
         playSound(choice);
 
         if (!isGameActive || isTestRound) {
             if(isTestRound) {
-                document.getElementById('msg').innerText = "Practice: " + choice;
+                const noteObj = progression.find(n => n.id === choice);
+                document.getElementById('msg').innerText = "Practice: " + noteObj.solfege;
             }
             return;
         }
@@ -426,16 +455,10 @@
             streak++;
             document.getElementById('msg').innerText = "Correct! ✨";
             
-            if (streak >= 20) {
-                if (gameLevel < progression.length) {
-                    gameLevel++;
-                    document.getElementById('msg').innerText = "LEVEL UP! Expanding keyboard scale...";
-                    setTimeout(prepareRound, 1500);
-                } else {
-                    document.getElementById('msg').innerText = "MASTERED! You completed all bell levels!";
-                    isGameActive = false;
-                    setTimeout(() => location.reload(), 3000);
-                }
+            if (streak >= 10) {
+                document.getElementById('msg').innerText = "ROUND COMPLETED! Fantastic listening skills!";
+                isGameActive = false;
+                setTimeout(() => location.reload(), 2500);
             } else {
                 updateUI();
                 setTimeout(nextQuestion, 800);
@@ -458,18 +481,8 @@
     function updateUI() {
         document.getElementById('streak').innerText = streak;
         document.getElementById('strikes').innerText = strikes;
-        document.getElementById('progress-bar').style.width = (streak * 5) + "%";
-        
-        progression.forEach((note, i) => {
-            const btn = document.getElementById(`btn-${note.id}`);
-            if (!isGameActive || i < gameLevel) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
+        document.getElementById('progress-bar').style.width = (streak * 10) + "%";
     }
-    updateUI();
 </script>
 </body>
 </html>
