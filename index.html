@@ -90,7 +90,7 @@
 
         #msg { font-weight: 600; color: #94a3b8; min-height: 1.5rem; text-align: center; margin-bottom: 20px; font-size: 1.1rem; }
 
-        /* --- SINGLE OCTAVE VIEWPORT OVERFLOW CONTAINER --- */
+        /* --- PORTRAIT MODE: LIMITS VIEW TO ONE OCTAVE SPAN --- */
         .keyboard-wrapper {
             background-color: var(--keyboard-bg);
             padding: 25px;
@@ -102,6 +102,15 @@
             display: block;
             -webkit-overflow-scrolling: touch; 
             border: 2px solid #334155;
+        }
+
+        /* --- LANDSCAPE MODE INTERCEPT: EXPANDS WIDE TO SEE ALL KEYS --- */
+        @media screen and (orientation: landscape) {
+            .keyboard-wrapper {
+                max-width: 100%; /* Removes the octave viewing window restriction */
+                display: flex;
+                justify-content: center;
+            }
         }
 
         .keyboard-wrapper::-webkit-scrollbar {
@@ -173,7 +182,7 @@
             margin-top: 85px; 
         }
         
-        /* Layout Grid Column Offset Alignments from G3 to G5 */
+        /* Layout Alignment Grid Spacing Adjustments */
         #btn-Ab3  { grid-column: 1; margin-left: 40px; }
         #btn-Bb3  { grid-column: 2; margin-left: 40px; }
         #btn-Db4  { grid-column: 4; margin-left: 40px; }
@@ -185,19 +194,19 @@
         #btn-Eb5  { grid-column: 12; margin-left: 40px; }
         #btn-Gb5  { grid-column: 14; margin-left: 40px; }
 
-        /* --- STRICT HARMONIZED PRODIGIES COLORS --- */
-        .bell-btn.G3,  .bell-btn.G4,  .bell-btn.G5   { background-color: #4d908e; } /* So */
-        .bell-btn.Ab3, .bell-btn.Ab4, .bell-btn.Ab5  { background-color: #277da1; } /* Si */
-        .bell-btn.A3,  .bell-btn.A4                  { background-color: #6a4c93; } /* La */
-        .bell-btn.Bb3, .bell-btn.Bb4                 { background-color: #8367a6; } /* Te */
-        .bell-btn.B3,  .bell-btn.B4                  { background-color: #f35b8c; } /* Ti */
-        .bell-btn.C4,  .bell-btn.C5                  { background-color: #d62828; } /* Do */
-        .bell-btn.Db4, .bell-btn.Db5                 { background-color: #e65c40; } /* Di */
-        .bell-btn.D4,  .bell-btn.D5                  { background-color: #f3722c; } /* Re */
-        .bell-btn.Eb4, .bell-btn.Eb5                 { background-color: #f9c74f; } /* Me */
-        .bell-btn.E4,  .bell-btn.E5                  { background-color: #f9cd13; } /* Mi */
-        .bell-btn.F4,  .bell-btn.F5                  { background-color: #90be6d; } /* Fa */
-        .bell-btn.Gb4, .bell-btn.Gb5                 { background-color: #43aa8b; } /* Fi */
+        /* --- STABLE SYNCED PRODIGIES COLORS --- */
+        .bell-btn.G3,  .bell-btn.G4,  .bell-btn.G5   { background-color: #4d908e; } 
+        .bell-btn.Ab3, .bell-btn.Ab4, .bell-btn.Ab5  { background-color: #277da1; } 
+        .bell-btn.A3,  .bell-btn.A4                  { background-color: #6a4c93; } 
+        .bell-btn.Bb3, .bell-btn.Bb4                 { background-color: #8367a6; } 
+        .bell-btn.B3,  .bell-btn.B4                  { background-color: #f35b8c; } 
+        .bell-btn.C4,  .bell-btn.C5                  { background-color: #d62828; } 
+        .bell-btn.Db4, .bell-btn.Db5                 { background-color: #e65c40; } 
+        .bell-btn.D4,  .bell-btn.D5                  { background-color: #f3722c; } 
+        .bell-btn.Eb4, .bell-btn.Eb5                 { background-color: #f9c74f; } 
+        .bell-btn.E4,  .bell-btn.E5                  { background-color: #f9cd13; } 
+        .bell-btn.F4,  .bell-btn.F5                  { background-color: #90be6d; } 
+        .bell-btn.Gb4, .bell-btn.Gb5                 { background-color: #43aa8b; } 
     </style>
 </head>
 <body>
@@ -232,7 +241,6 @@
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioCtx = new AudioContext();
     
-    // Explicit range tracking locked from G3 up to G5
     const progression = [
         { id: "G3",  solfege: "So 3", file: "So 3.wav", type: "white", style: "G3" },
         { id: "Ab3", solfege: "Si 3", file: "Si 3.wav", type: "black", style: "Ab3" },
@@ -296,10 +304,10 @@
                 const arrayBuffer = await response.arrayBuffer();
                 audioBuffers[note.id] = await audioCtx.decodeAudioData(arrayBuffer);
             } catch (error) {
-                console.error(`Audio track loading breakdown: ${note.file}`, error);
+                console.error(`Audio pipeline buffer mismatch on: ${note.file}`, error);
             }
         }
-        document.getElementById('msg').innerText = "Swipe/Scroll left or right to switch octaves! Tap keys to play.";
+        document.getElementById('msg').innerText = "Turn phone sideways (Landscape) to see all keys instantly!";
     }
     loadAllSounds();
 
