@@ -1,8 +1,9 @@
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zayne's Ear Training - Chromatic Solfege Keyboard</title>
+    <title>Zayne's Ear Training</title>
     <style>
         * { box-sizing: border-box; }
         :root {
@@ -28,7 +29,7 @@
 
         .container { width: 100%; max-width: 1050px; display: flex; flex-direction: column; align-items: center; }
 
-        h1 { color: #38bdf8; font-size: 2.2rem; text-align: center; margin: 10px 0 5px 0; width: 100%; letter-spacing: 2px; }
+        h1 { color: #38bdf8; font-size: 2.5rem; font-weight: 800; text-align: center; margin: 10px 0 5px 0; width: 100%; letter-spacing: 1px; }
 
         .header-line { width: 80%; height: 2px; background: #38bdf8; margin-bottom: 20px; opacity: 0.5; }
 
@@ -60,7 +61,6 @@
         .mode-tag.game-on { background: #f59e0b; color: #1e293b; }
         .mode-tag.test-round { background: #6366f1; color: #ffffff; }
 
-        /* --- SELECTION POOL CHECKBOX AREA --- */
         .selection-panel {
             background: rgba(15, 23, 42, 0.6);
             border-radius: 15px;
@@ -76,7 +76,6 @@
             color: #38bdf8;
             margin-bottom: 10px;
             text-align: center;
-            letter-spacing: 0.5px;
         }
         .pool-controls {
             display: flex;
@@ -109,9 +108,7 @@
             gap: 5px;
             font-size: 0.8rem;
             cursor: pointer;
-            user-select: none;
         }
-        .check-item input { cursor: pointer; }
 
         .progress-container { width: 100%; max-width: 500px; height: 12px; background-color: var(--progress-bg); border-radius: 10px; margin-bottom: 5px; overflow: hidden; }
         .progress-bar { height: 100%; width: 0%; background-color: var(--progress-fill); transition: width 0.3s; }
@@ -128,10 +125,10 @@
 
         #msg { font-weight: 600; color: #94a3b8; min-height: 1.5rem; text-align: center; margin-bottom: 15px; font-size: 1.1rem; }
 
-        /* --- PIANO KEYBOARD GRID LAYOUT --- */
+        /* --- STABLE SQUARE GEOMETRY BOARD GRID --- */
         .keyboard-wrapper {
             background-color: var(--keyboard-bg);
-            padding: 20px;
+            padding: 25px;
             border-radius: 20px;
             width: 100%;
             overflow-x: auto;
@@ -142,8 +139,8 @@
         .piano-grid {
             position: relative;
             display: grid;
-            grid-template-columns: repeat(12, 68px); /* 12 white-key blocks wide */
-            gap: 6px;
+            grid-template-columns: repeat(12, 70px); /* Equal distributed column tracking grid width */
+            gap: 10px;
             width: max-content;
         }
 
@@ -152,89 +149,88 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 110px;
+            height: 70px;
             z-index: 2;
             pointer-events: none;
             display: grid;
-            grid-template-columns: repeat(12, 68px);
-            gap: 6px;
+            grid-template-columns: repeat(12, 70px);
+            gap: 10px;
         }
 
         .naturals-layer {
             display: contents;
         }
 
-        /* Swatch Key Box Styles */
+        /* Perfectly Proportioned Square Blocks Styling */
         .bell-btn {
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
             cursor: pointer;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 10px 2px;
+            width: 70px;
+            height: 70px; /* Force proportional squares */
             position: relative;
-            transition: transform 0.1s, filter 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.05s, filter 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
             pointer-events: auto;
-            background-color: #1e293b;
             color: #ffffff;
             font-weight: 800;
-            font-size: 0.95rem;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+            font-size: 0.85rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            text-align: center;
+            padding: 2px;
         }
         
-        .bell-btn:active { transform: scale(0.95); }
-        .bell-btn.dimmed { filter: grayscale(80%) brightness(35%); opacity: 0.5; }
+        .bell-btn:active { transform: scale(0.92); }
+        .bell-btn.dimmed { filter: grayscale(80%) brightness(30%); opacity: 0.4; }
 
-        /* Key Layer Layout Parameters */
+        /* Push row spacing parameters down dynamically for the base layer */
         .naturals-layer .bell-btn {
-            height: 160px;
-            margin-top: 105px;
-        }
-
-        .sharps-layer .bell-btn {
-            height: 100px;
-            grid-column-end: span 2;
-            width: 52px;
+            margin-top: 85px; /* Creates clean spacing under top row */
         }
         
-        #btn-Bb3  { grid-column: 1; margin-left: 42px; }
-        #btn-Db4  { grid-column: 3; margin-left: 42px; }
-        #btn-Eb4  { grid-column: 4; margin-left: 42px; }
-        #btn-Gb4  { grid-column: 6; margin-left: 42px; }
-        #btn-Ab4  { grid-column: 7; margin-left: 42px; }
-        #btn-Bb4  { grid-column: 8; margin-left: 42px; }
-        #btn-Db5  { grid-column: 10; margin-left: 42px; }
-        #btn-Eb5  { grid-column: 11; margin-left: 42px; }
+        /* Direct Alignment mapping configuration matching image spacing structure */
+        #btn-Bb3  { grid-column: 1; margin-left: 40px; }
+        #btn-Db4  { grid-column: 3; margin-left: 40px; }
+        #btn-Eb4  { grid-column: 4; margin-left: 40px; }
+        #btn-Gb4  { grid-column: 6; margin-left: 40px; }
+        #btn-Ab4  { grid-column: 7; margin-left: 40px; }
+        #btn-Bb4  { grid-column: 8; margin-left: 40px; }
+        #btn-Db5  { grid-column: 10; margin-left: 40px; }
+        #btn-Eb5  { grid-column: 11; margin-left: 40px; }
 
-        /* --- PRODIGIES BOX COLOR SYSTEM --- */
-        .bell-btn.A3  { background-color: #5b448a; } 
-        .bell-btn.Bb3 { background-color: #704d8c; }
-        .bell-btn.B3  { background-color: #d1528b; } 
-        .bell-btn.C4  { background-color: #dc2626; } 
-        .bell-btn.Db4 { background-color: #cd5a43; }
-        .bell-btn.D4  { background-color: #ea580c; } 
-        .bell-btn.Eb4 { background-color: #e3be54; }
-        .bell-btn.E4  { background-color: #eab308; } 
-        .bell-btn.F4  { background-color: #65a30d; } 
-        .bell-btn.Gb4 { background-color: #559c74; }
-        .bell-btn.G4  { background-color: #0d9488; } 
-        .bell-btn.Ab4 { background-color: #3b7bb8; }
-        .bell-btn.A4  { background-color: #7c3aed; } 
-        .bell-btn.Bb4 { background-color: #825e9c; }
-        .bell-btn.B4  { background-color: #ec4899; } 
-        .bell-btn.C5  { background-color: #be123c; } 
-        .bell-btn.Db5 { background-color: #c2410c; }
-        .bell-btn.D5  { background-color: #f97316; } 
-        .bell-btn.Eb5 { background-color: #ca8a04; }
-        .bell-btn.E5  { background-color: #84cc16; }
+        /* --- IDENTICAL INTER-OCTAVE PRODIGIES HEX COLORS --- */
+        /* Red Notes */
+        .bell-btn.C4, .bell-btn.C5   { background-color: #d62828; } 
+        /* Di Notes (Dark Red/Orange Sharp) */
+        .bell-btn.Db4, .bell-btn.Db5 { background-color: #e65c40; } 
+        /* Re Notes */
+        .bell-btn.D4, .bell-btn.D5   { background-color: #f3722c; } 
+        /* Me Notes (Golden Muted Yellow Sharp) */
+        .bell-btn.Eb4, .bell-btn.Eb5 { background-color: #f9c74f; } 
+        /* Mi Notes */
+        .bell-btn.E4, .bell-btn.E5   { background-color: #f9cd13; } 
+        /* Fa Notes */
+        .bell-btn.F4                 { background-color: #90be6d; } 
+        /* Fi Notes (Forest Pastel Green Sharp) */
+        .bell-btn.Gb4                { background-color: #43aa8b; } 
+        /* So Notes */
+        .bell-btn.G4                 { background-color: #4d908e; } 
+        /* Si Notes (Classic Royal Blue Sharp) */
+        .bell-btn.Ab4                { background-color: #277da1; } 
+        /* La Notes */
+        .bell-btn.A3, .bell-btn.A4   { background-color: #6a4c93; } 
+        /* Te Notes (Pastel Violet Sharp) */
+        .bell-btn.Bb3, .bell-btn.Bb4 { background-color: #8367a6; } 
+        /* Ti Notes */
+        .bell-btn.B3, .bell-btn.B4   { background-color: #f35b8c; } 
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>CHROMACHORDS</h1>
+    <h1>Zayne's Ear Training</h1>
     <div class="header-line"></div>
     
     <div class="stats">
@@ -261,7 +257,7 @@
         <button id="play-btn" onclick="prepareRound()">Start Game</button>
         <button id="begin-round-btn" onclick="startActualGame()">Begin Round</button>
         <button id="replay-btn" onclick="replaySound()">Replay Sound</button>
-        <div id="msg">Explore all sounds before playing!</div>
+        <div id="msg">Loading audio components... Please wait.</div>
 
         <div class="keyboard-wrapper">
             <div class="piano-grid">
@@ -273,7 +269,10 @@
 </div>
 
 <script>
-    // System Definition Array
+    // Audio Pipeline Context Setup
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new AudioContext();
+    
     const progression = [
         { id: "A3",  solfege: "La 3", file: "La 3.wav", type: "white", style: "A3" },
         { id: "Bb3", solfege: "Te 3", file: "Te 3.wav", type: "black", style: "Bb3" },
@@ -297,6 +296,7 @@
         { id: "E5",  solfege: "Mi 5", file: "Mi 5.wav", type: "white", style: "E5" }
     ];
     
+    let audioBuffers = {}; // Pre-cached binary data stored inside RAM
     let streak = 0;
     let strikes = 0;
     let currentTarget = null;
@@ -310,9 +310,8 @@
     const naturalsRow = document.getElementById('naturals-container');
     const checkboxGrid = document.getElementById('checkbox-container');
 
-    // Build the visual swatches and layout configuration
+    // Build the structural grid and layout checkboxes
     progression.forEach((note) => {
-        // Create key block
         const btn = document.createElement('button');
         btn.className = `bell-btn ${note.style}`;
         btn.id = `btn-${note.id}`;
@@ -325,7 +324,6 @@
             naturalsRow.appendChild(btn);
         }
 
-        // Create configuration selector checkboxes
         const label = document.createElement('label');
         label.className = 'check-item';
         label.innerHTML = `
@@ -334,6 +332,21 @@
         `;
         checkboxGrid.appendChild(label);
     });
+
+    // Zero-Latency Asset Loader Engine
+    async function loadAllSounds() {
+        for (let note of progression) {
+            try {
+                const response = await fetch(note.file);
+                const arrayBuffer = await response.arrayBuffer();
+                audioBuffers[note.id] = await audioCtx.decodeAudioData(arrayBuffer);
+            } catch (error) {
+                console.error(`Asset fetch/decode anomaly on item: ${note.file}`, error);
+            }
+        }
+        document.getElementById('msg').innerText = "Explore all sounds before playing!";
+    }
+    loadAllSounds();
 
     function syncPoolUI() {
         progression.forEach(note => {
@@ -367,14 +380,18 @@
         return selected;
     }
 
-    // Audio Player Engine Execution
+    // High performance instantaneous firing play function
     function playSound(noteId) {
-        const noteConfig = progression.find(n => n.id === noteId);
-        if (!noteConfig) return;
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
         
-        // Native browser instantiation utilizing your file structure
-        const snd = new Audio(noteConfig.file);
-        snd.play().catch(e => console.log("Audio asset loader context exception:", e));
+        if (!audioBuffers[noteId]) return; // Safeguard if file isn't loaded yet
+
+        const source = audioCtx.createBufferSource();
+        source.buffer = audioBuffers[noteId];
+        source.connect(audioCtx.destination);
+        source.start(0);
     }
 
     function replaySound() { if (currentTarget) { playSound(currentTarget); startTimer(); } }
@@ -409,9 +426,8 @@
         document.getElementById('play-btn').style.display = "none";
         document.getElementById('replay-btn').style.display = "none"; 
         document.getElementById('begin-round-btn').style.display = "block";
-        document.getElementById('pool-selector-zone').style.with = "100%";
         
-        document.getElementById('mode-label').innerText = "Practice Round: Try your active sounds!";
+        document.getElementById('mode-label').innerText = "Practice Round";
         document.getElementById('mode-label').className = "mode-tag test-round";
         
         updateUI();
@@ -437,7 +453,6 @@
     }
 
     function handleInput(choice) {
-        // Disallow dim/deselected choices during active gameplay loops
         if (isGameActive && !activeGamePool.includes(choice)) return;
 
         playSound(choice);
