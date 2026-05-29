@@ -1,3 +1,4 @@
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -90,6 +91,7 @@
 
         #msg { font-weight: 600; color: #94a3b8; min-height: 1.5rem; text-align: center; margin-bottom: 20px; font-size: 1.1rem; }
 
+        /* --- PORTRAIT MODE: LIMITS VIEW TO ONE OCTAVE SPAN --- */
         .keyboard-wrapper {
             background-color: var(--keyboard-bg);
             padding: 25px;
@@ -103,18 +105,29 @@
             border: 2px solid #334155;
         }
 
+        /* --- LANDSCAPE MODE INTERCEPT: EXPANDS WIDE TO SEE ALL KEYS --- */
         @media screen and (orientation: landscape) {
             .keyboard-wrapper {
-                max-width: 100%; 
+                max-width: 100%; /* Removes the octave viewing window restriction */
                 display: flex;
                 justify-content: center;
             }
         }
 
-        .keyboard-wrapper::-webkit-scrollbar { height: 10px; }
-        .keyboard-wrapper::-webkit-scrollbar-track { background: #0b0f19; border-radius: 10px; }
-        .keyboard-wrapper::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 10px; }
-        .keyboard-wrapper::-webkit-scrollbar-thumb:hover { background: #0ea5e9; }
+        .keyboard-wrapper::-webkit-scrollbar {
+            height: 10px;
+        }
+        .keyboard-wrapper::-webkit-scrollbar-track {
+            background: #0b0f19;
+            border-radius: 10px;
+        }
+        .keyboard-wrapper::-webkit-scrollbar-thumb {
+            background: #38bdf8;
+            border-radius: 10px;
+        }
+        .keyboard-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #0ea5e9;
+        }
 
         .piano-grid {
             position: relative;
@@ -138,7 +151,9 @@
             gap: 10px;
         }
 
-        .naturals-layer { display: contents; }
+        .naturals-layer {
+            display: contents;
+        }
 
         .bell-btn {
             border: 2px solid rgba(255, 255, 255, 0.2);
@@ -164,8 +179,11 @@
         .bell-btn:active { transform: scale(0.92); }
         .bell-btn.dimmed { filter: grayscale(80%) brightness(30%); opacity: 0.4; pointer-events: none; }
 
-        .naturals-layer .bell-btn { margin-top: 85px; }
+        .naturals-layer .bell-btn {
+            margin-top: 85px; 
+        }
         
+        /* Layout Alignment Grid Spacing Adjustments */
         #btn-Ab3  { grid-column: 1; margin-left: 40px; }
         #btn-Bb3  { grid-column: 2; margin-left: 40px; }
         #btn-Db4  { grid-column: 4; margin-left: 40px; }
@@ -177,6 +195,7 @@
         #btn-Eb5  { grid-column: 12; margin-left: 40px; }
         #btn-Gb5  { grid-column: 14; margin-left: 40px; }
 
+        /* --- STABLE SYNCED PRODIGIES COLORS --- */
         .bell-btn.G3,  .bell-btn.G4,  .bell-btn.G5   { background-color: #4d908e; } 
         .bell-btn.Ab3, .bell-btn.Ab4, .bell-btn.Ab5  { background-color: #277da1; } 
         .bell-btn.A3,  .bell-btn.A4                  { background-color: #6a4c93; } 
@@ -197,6 +216,7 @@
     <div class="header-line"></div>
 
     <div class="game-panel">
+        
         <div class="selection-panel" id="pool-selector-zone">
             <div class="selection-title">Toggle Active Practice Notes</div>
             <div class="pool-controls">
@@ -223,35 +243,34 @@
     const audioCtx = new AudioContext();
     
     const progression = [
-        { id: "G3",  solfege: "So 3", mp3File: "So 3.mp3", wavFile: "So 3.wav", type: "white", style: "G3" },
-        { id: "Ab3", solfege: "Si 3", mp3File: "Si 3.mp3", wavFile: "Si 3.wav", type: "black", style: "Ab3" },
-        { id: "A3",  solfege: "La 3", mp3File: "La 3.mp3", wavFile: "La 3.wav", type: "white", style: "A3" },
-        { id: "Bb3", solfege: "Te 3", mp3File: "Te 3.mp3", wavFile: "Te 3.wav", type: "black", style: "Bb3" },
-        { id: "B3",  solfege: "Ti 3", mp3File: "Ti 3.mp3", wavFile: "Ti 3.wav", type: "white", style: "B3" },
-        { id: "C4",  solfege: "Do 4", mp3File: "Do 4.mp3", wavFile: "Do 4.wav", type: "white", style: "C4" },
-        { id: "Db4", solfege: "Di 4", mp3File: "Di 4.mp3", wavFile: "Di 4.wav", type: "black", style: "Db4" },
-        { id: "D4",  solfege: "Re 4", mp3File: "Re 4.mp3", wavFile: "Re 4.wav", type: "white", style: "D4" },
-        { id: "Eb4", solfege: "Me 4", mp3File: "Me 4.mp3", wavFile: "Me 4.wav", type: "black", style: "Eb4" },
-        { id: "E4",  solfege: "Mi 4", mp3File: "Mi 4.mp3", wavFile: "Mi 4.wav", type: "white", style: "E4" },
-        { id: "F4",  solfege: "Fa 4", mp3File: "Fa 4.mp3", wavFile: "Fa 4.wav", type: "white", style: "F4" },
-        { id: "Gb4", solfege: "Fi 4", mp3File: "Fi 4.mp3", wavFile: "Fi 4.wav", type: "black", style: "Gb4" },
-        { id: "G4",  solfege: "So 4", mp3File: "So 4.mp3", wavFile: "So 4.wav", type: "white", style: "G4" },
-        { id: "Ab4", solfege: "Si 4", mp3File: "Si 4.mp3", wavFile: "Si 4.wav", type: "black", style: "Ab4" },
-        { id: "A4",  solfege: "La 4", mp3File: "La 4.mp3", wavFile: "La 4.wav", type: "white", style: "A4" },
-        { id: "Bb4", solfege: "Te 4", mp3File: "Te 4.mp3", wavFile: "Te 4.wav", type: "black", style: "Bb4" },
-        { id: "B4",  solfege: "Ti 4", mp3File: "Ti 4.mp3", wavFile: "Ti 4.wav", type: "white", style: "B4" },
-        { id: "C5",  solfege: "Do 5", mp3File: "Do 5.mp3", wavFile: "Do 5.wav", type: "white", style: "C5" },
-        { id: "Db5", solfege: "Di 5", mp3File: "Di 5.mp3", wavFile: "Di 5.wav", type: "black", style: "Db5" },
-        { id: "D5",  solfege: "Re 5", mp3File: "Re 5.mp3", wavFile: "Re 5.wav", type: "white", style: "D5" },
-        { id: "Eb5", solfege: "Me 5", mp3File: "Me 5.mp3", wavFile: "Me 5.wav", type: "black", style: "Eb5" },
-        { id: "E5",  solfege: "Mi 5", mp3File: "Mi 5.mp3", wavFile: "Mi 5.wav", type: "white", style: "E5" },
-        { id: "F5",  solfege: "Fa 5", mp3File: "Fa 5.mp3", wavFile: "Fa 5.wav", type: "white", style: "F5" },
-        { id: "Gb5", solfege: "Fi 5", mp3File: "Fi 5.mp3", wavFile: "Fi 5.wav", type: "black", style: "Gb5" },
-        { id: "G5",  solfege: "So 5", mp3File: "So 5.mp3", wavFile: "So 5.wav", type: "white", style: "G5" }
+        { id: "G3",  solfege: "So 3", file: "So 3.wav", type: "white", style: "G3" },
+        { id: "Ab3", solfege: "Si 3", file: "Si 3.wav", type: "black", style: "Ab3" },
+        { id: "A3",  solfege: "La 3", file: "La 3.wav", type: "white", style: "A3" },
+        { id: "Bb3", solfege: "Te 3", file: "Te 3.wav", type: "black", style: "Bb3" },
+        { id: "B3",  solfege: "Ti 3", file: "Ti 3.wav", type: "white", style: "B3" },
+        { id: "C4",  solfege: "Do 4", file: "Do 4.wav", type: "white", style: "C4" },
+        { id: "Db4", solfege: "Di 4", file: "Di 4.wav", type: "black", style: "Db4" },
+        { id: "D4",  solfege: "Re 4", file: "Re 4.wav", type: "white", style: "D4" },
+        { id: "Eb4", solfege: "Me 4", file: "Me 4.wav", type: "black", style: "Eb4" },
+        { id: "E4",  solfege: "Mi 4", file: "Mi 4.wav", type: "white", style: "E4" },
+        { id: "F4",  solfege: "Fa 4", file: "Fa 4.wav", type: "white", style: "F4" },
+        { id: "Gb4", solfege: "Fi 4", file: "Fi 4.wav", type: "black", style: "Gb4" },
+        { id: "G4",  solfege: "So 4", file: "So 4.wav", type: "white", style: "G4" },
+        { id: "Ab4", solfege: "Si 4", file: "Si 4.wav", type: "black", style: "Ab4" },
+        { id: "A4",  solfege: "La 4", file: "La 4.wav", type: "white", style: "A4" },
+        { id: "Bb4", solfege: "Te 4", file: "Te 4.wav", type: "black", style: "Bb4" },
+        { id: "B4",  solfege: "Ti 4", file: "Ti 4.wav", type: "white", style: "B4" },
+        { id: "C5",  solfege: "Do 5", file: "Do 5.wav", type: "white", style: "C5" },
+        { id: "Db5", solfege: "Di 5", file: "Di 5.wav", type: "black", style: "Db5" },
+        { id: "D5",  solfege: "Re 5", file: "Re 5.wav", type: "white", style: "D5" },
+        { id: "Eb5", solfege: "Me 5", file: "Me 5.wav", type: "black", style: "Eb5" },
+        { id: "E5",  solfege: "Mi 5", file: "Mi 5.wav", type: "white", style: "E5" },
+        { id: "F5",  solfege: "Fa 5", file: "Fa 5.wav", type: "white", style: "F5" },
+        { id: "Gb5", solfege: "Fi 5", file: "Fi 5.wav", type: "black", style: "Gb5" },
+        { id: "G5",  solfege: "So 5", file: "So 5.wav", type: "white", style: "G5" }
     ];
     
-    let mp3Buffers = {}; 
-    let wavBuffers = {}; 
+    let audioBuffers = {}; 
 
     const sharpsRow = document.getElementById('sharps-container');
     const naturalsRow = document.getElementById('naturals-container');
@@ -279,31 +298,17 @@
         checkboxGrid.appendChild(label);
     });
 
-    async function fetchAudioBuffer(url) {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP error ${response.status}`);
-        const arrayBuffer = await response.arrayBuffer();
-        return await audioCtx.decodeAudioData(arrayBuffer);
-    }
-
     async function loadAllSounds() {
         for (let note of progression) {
-            // Load WAV files (Crucial voice files)
             try {
-                wavBuffers[note.id] = await fetchAudioBuffer(note.wavFile);
-            } catch (e) {
-                console.error(`Missing vocal file: ${note.wavFile}`, e);
-            }
-
-            // Load MP3 files (Bell sounds)
-            try {
-                mp3Buffers[note.id] = await fetchAudioBuffer(note.mp3File);
-            } catch (e) {
-                // Look for alternative fallback if octave file isn't physically there
-                console.log(`Using smart fallback routing for note: ${note.id}`);
+                const response = await fetch(note.file);
+                const arrayBuffer = await response.arrayBuffer();
+                audioBuffers[note.id] = await audioCtx.decodeAudioData(arrayBuffer);
+            } catch (error) {
+                console.error(`Audio pipeline buffer mismatch on: ${note.file}`, error);
             }
         }
-        document.getElementById('msg').innerText = "Ready! Every single key is linked to a bell and voice now.";
+        document.getElementById('msg').innerText = "Turn phone sideways (Landscape) to see all keys instantly!";
     }
     loadAllSounds();
 
@@ -311,7 +316,11 @@
         progression.forEach(note => {
             const chk = document.getElementById(`chk-${note.id}`);
             const btn = document.getElementById(`btn-${note.id}`);
-            btn.classList.toggle('dimmed', !chk.checked);
+            if (chk.checked) {
+                btn.classList.remove('dimmed');
+            } else {
+                btn.classList.add('dimmed');
+            }
         });
     }
 
@@ -329,51 +338,12 @@
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
+        if (!audioBuffers[choice]) return; 
 
-        const now = audioCtx.currentTime;
-        const overlapTiming = 0.25; // Snappy gap override transition
-
-        let bellBufferToPlay = mp3Buffers[choice];
-        let playbackRateValue = 1.0;
-
-        // --- AUTOMATIC PITCH-SHIFT ROUTING FALLBACKS ---
-        if (!bellBufferToPlay) {
-            // Extract note name letter (e.g., "Do", "Re", "So")
-            const basePrefix = choice.replace(/[0-9]/g, ''); 
-            
-            if (choice.includes('5')) {
-                // If Octave 5 bell is missing, play the Octave 4 bell at double speed (one octave higher)
-                const fallbackId = `${basePrefix}4`;
-                if (mp3Buffers[fallbackId]) {
-                    bellBufferToPlay = mp3Buffers[fallbackId];
-                    playbackRateValue = 2.0; 
-                }
-            } else if (choice.includes('3')) {
-                // If Octave 3 bell is missing, play the Octave 4 bell at half speed (one octave lower)
-                const fallbackId = `${basePrefix}4`;
-                if (mp3Buffers[fallbackId]) {
-                    bellBufferToPlay = mp3Buffers[fallbackId];
-                    playbackRateValue = 0.5; 
-                }
-            }
-        }
-
-        // Play the matched or pitch-corrected Bell Sound
-        if (bellBufferToPlay) {
-            const mp3Source = audioCtx.createBufferSource();
-            mp3Source.buffer = bellBufferToPlay;
-            mp3Source.playbackRate.value = playbackRateValue;
-            mp3Source.connect(audioCtx.destination);
-            mp3Source.start(now);
-        }
-
-        // Play the exact matching vocal WAV file right after the bell
-        if (wavBuffers[choice]) {
-            const wavSource = audioCtx.createBufferSource();
-            wavSource.buffer = wavBuffers[choice];
-            wavSource.connect(audioCtx.destination);
-            wavSource.start(now + overlapTiming);
-        }
+        const source = audioCtx.createBufferSource();
+        source.buffer = audioBuffers[choice];
+        source.connect(audioCtx.destination);
+        source.start(0);
     }
 </script>
 </body>
