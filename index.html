@@ -226,9 +226,9 @@
     const progression = [
         { id: "G3",  solfege: "So 3", mp3File: "So 3.mp3", wavFile: "So 3.wav", type: "white", style: "G3" },
         { id: "Ab3", solfege: "Si 3", mp3File: "Si 3.mp3", wavFile: "Si 3.wav", type: "black", style: "Ab3" },
-        { id: "A3",  solfege: "La 3", mp3File: "La 3.mp3", wavFile: "La 3.wav", type: "white", style: "A3" },
-        { id: "Bb3", solfege: "Te 3", mp3File: "Te 3.mp3", wavFile: "Te 3.wav", type: "black", style: "Bb3" },
-        { id: "B3",  solfege: "Ti 3", mp3File: "Ti 3.mp3", wavFile: "Ti 3.wav", type: "white", style: "B3" },
+        { id: "A3",  solfege: "La 3", mp3File: "", wavFile: "La 3.wav", type: "white", style: "A3" },
+        { id: "Bb3", solfege: "Te 3", mp3File: "", wavFile: "Te 3.wav", type: "black", style: "Bb3" },
+        { id: "B3",  solfege: "Ti 3", mp3File: "", wavFile: "Ti 3.wav", type: "white", style: "B3" },
         { id: "C4",  solfege: "Do 4", mp3File: "Do 4.mp3", wavFile: "Do 4.wav", type: "white", style: "C4" },
         { id: "Db4", solfege: "Di 4", mp3File: "Di 4.mp3", wavFile: "Di 4.wav", type: "black", style: "Db4" },
         { id: "D4",  solfege: "Re 4", mp3File: "Re 4.mp3", wavFile: "Re 4.wav", type: "white", style: "D4" },
@@ -291,16 +291,15 @@
         for (let note of progression) {
             // Load WAV files (Crucial voice files)
             try {
-                wavBuffers[note.id] = await fetchAudioBuffer(note.wavFile);
+                if(note.wavFile) wavBuffers[note.id] = await fetchAudioBuffer(note.wavFile);
             } catch (e) {
                 console.error(`Missing vocal file: ${note.wavFile}`, e);
             }
 
             // Load MP3 files (Bell sounds)
             try {
-                mp3Buffers[note.id] = await fetchAudioBuffer(note.mp3File);
+                if(note.mp3File) mp3Buffers[note.id] = await fetchAudioBuffer(note.mp3File);
             } catch (e) {
-                // Look for alternative fallback if octave file isn't physically there
                 console.log(`Using smart fallback routing for note: ${note.id}`);
             }
         }
@@ -332,25 +331,22 @@
         }
 
         const now = audioCtx.currentTime;
-        const overlapTiming = 0.25; // Snappy gap override transition
+        const overlapTiming = 0.25; 
 
         let bellBufferToPlay = mp3Buffers[choice];
         let playbackRateValue = 1.0;
 
         // --- AUTOMATIC PITCH-SHIFT ROUTING FALLBACKS ---
         if (!bellBufferToPlay) {
-            // Extract note name letter (e.g., "Do", "Re", "So")
             const basePrefix = choice.replace(/[0-9]/g, ''); 
             
             if (choice.includes('5')) {
-                // If Octave 5 bell is missing, play the Octave 4 bell at double speed (one octave higher)
                 const fallbackId = `${basePrefix}4`;
                 if (mp3Buffers[fallbackId]) {
                     bellBufferToPlay = mp3Buffers[fallbackId];
                     playbackRateValue = 2.0; 
                 }
             } else if (choice.includes('3')) {
-                // If Octave 3 bell is missing, play the Octave 4 bell at half speed (one octave lower)
                 const fallbackId = `${basePrefix}4`;
                 if (mp3Buffers[fallbackId]) {
                     bellBufferToPlay = mp3Buffers[fallbackId];
