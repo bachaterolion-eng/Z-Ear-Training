@@ -1,4 +1,3 @@
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -93,15 +92,16 @@
 
         .keyboard-wrapper {
             background-color: var(--keyboard-bg);
-            padding: 25px;
+            padding: 30px 20px;
             border-radius: 20px;
             width: 100%;
-            max-width: 650px; 
+            max-width: 1100px; 
             overflow-x: auto;
             overflow-y: hidden;
             display: block;
             -webkit-overflow-scrolling: touch; 
-            border: 2px solid #334155;
+            border: 4px solid #1e293b;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
 
         @media screen and (orientation: landscape) {
@@ -119,77 +119,110 @@
 
         .piano-grid {
             position: relative;
-            display: grid;
-            grid-template-columns: repeat(15, 70px); 
-            gap: 10px;
+            display: block;
             width: max-content;
-            padding-bottom: 5px;
+            height: 240px;
+            background: #000;
+            padding: 4px;
+            border-radius: 4px;
         }
 
         .sharps-layer {
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 4px;
+            left: 4px;
             width: 100%;
-            height: 70px;
+            height: 145px;
             z-index: 2;
             pointer-events: none;
             display: grid;
-            grid-template-columns: repeat(15, 70px);
-            gap: 10px;
+            grid-template-columns: repeat(15, 60px);
+            gap: 5px;
         }
 
-        .naturals-layer { display: contents; }
+        .naturals-layer { 
+            display: grid;
+            grid-template-columns: repeat(15, 60px);
+            gap: 5px;
+            height: 100%;
+        }
 
         .bell-btn {
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.3);
             cursor: pointer;
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: center;
-            width: 70px;
-            height: 70px; 
             position: relative;
-            transition: transform 0.05s, filter 0.2s;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            transition: filter 0.2s, transform 0.05s, box-shadow 0.05s;
             pointer-events: auto;
             color: #ffffff;
             font-weight: 800;
-            font-size: 0.85rem;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            font-size: 0.8rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
             text-align: center;
-            padding: 2px;
+            padding-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
         
-        .bell-btn:active { transform: scale(0.92); }
-        .bell-btn.dimmed { filter: grayscale(80%) brightness(30%); opacity: 0.4; pointer-events: none; }
+        /* Piano Styling for White Keys */
+        .naturals-layer .bell-btn {
+            height: 232px;
+            border-radius: 0 0 7px 7px;
+            border-bottom: 4px solid rgba(0,0,0,0.4);
+        }
 
-        .naturals-layer .bell-btn { margin-top: 85px; }
+        /* Piano Styling for Black Keys */
+        .sharps-layer .bell-btn {
+            height: 145px;
+            width: 38px;
+            border-radius: 0 0 4px 4px;
+            z-index: 3;
+            font-size: 0.75rem;
+            padding-bottom: 10px;
+            box-shadow: 2px 4px 8px rgba(0,0,0,0.6);
+            border-bottom: 5px solid rgba(0,0,0,0.5);
+        }
+
+        .naturals-layer .bell-btn:active { 
+            transform: translateY(2px);
+            border-bottom-width: 1px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        }
+
+        .sharps-layer .bell-btn:active {
+            transform: translateY(2px);
+            border-bottom-width: 2px;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+        }
+
+        .bell-btn.dimmed { filter: grayscale(80%) brightness(20%); opacity: 0.2; pointer-events: none; }
         
-        #btn-Ab3  { grid-column: 1; margin-left: 40px; }
-        #btn-Bb3  { grid-column: 2; margin-left: 40px; }
-        #btn-Db4  { grid-column: 4; margin-left: 40px; }
-        #btn-Eb4  { grid-column: 5; margin-left: 40px; }
-        #btn-Gb4  { grid-column: 7; margin-left: 40px; }
-        #btn-Ab4  { grid-column: 8; margin-left: 40px; }
-        #btn-Bb4  { grid-column: 9; margin-left: 40px; }
-        #btn-Db5  { grid-column: 11; margin-left: 40px; }
-        #btn-Eb5  { grid-column: 12; margin-left: 40px; }
-        #btn-Gb5  { grid-column: 14; margin-left: 40px; }
+        /* Piano layout spacing configurations for accidental positions */
+        #btn-Ab3  { grid-column: 1; margin-left: 38px; }
+        #btn-Bb3  { grid-column: 2; margin-left: 38px; }
+        #btn-Db4  { grid-column: 4; margin-left: 38px; }
+        #btn-Eb4  { grid-column: 5; margin-left: 38px; }
+        #btn-Gb4  { grid-column: 7; margin-left: 38px; }
+        #btn-Ab4  { grid-column: 8; margin-left: 38px; }
+        #btn-Bb4  { grid-column: 9; margin-left: 38px; }
+        #btn-Db5  { grid-column: 11; margin-left: 38px; }
+        #btn-Eb5  { grid-column: 12; margin-left: 38px; }
+        #btn-Gb5  { grid-column: 14; margin-left: 38px; }
 
-        .bell-btn.G3,  .bell-btn.G4,  .bell-btn.G5   { background-color: #4d908e; } 
-        .bell-btn.Ab3, .bell-btn.Ab4, .bell-btn.Ab5  { background-color: #277da1; } 
-        .bell-btn.A3,  .bell-btn.A4                  { background-color: #6a4c93; } 
-        .bell-btn.Bb3, .bell-btn.Bb4                 { background-color: #8367a6; } 
-        .bell-btn.B3,  .bell-btn.B4                  { background-color: #f35b8c; } 
-        .bell-btn.C4,  .bell-btn.C5                  { background-color: #d62828; } 
-        .bell-btn.Db4, .bell-btn.Db5                 { background-color: #e65c40; } 
-        .bell-btn.D4,  .bell-btn.D5                  { background-color: #f3722c; } 
-        .bell-btn.Eb4, .bell-btn.Eb5                 { background-color: #f9c74f; } 
-        .bell-btn.E4,  .bell-btn.E5                  { background-color: #f9cd13; } 
-        .bell-btn.F4,  .bell-btn.F5                  { background-color: #90be6d; } 
-        .bell-btn.Gb4, .bell-btn.Gb5                 { background-color: #43aa8b; } 
+        /* Original Color Identity preserved perfectly */
+        .bell-btn.G3,  .bell-btn.G4,  .bell-btn.G5   { background: linear-gradient(to bottom, #3a6d6b, #4d908e); } 
+        .bell-btn.Ab3, .bell-btn.Ab4, .bell-btn.Ab5  { background: linear-gradient(to bottom, #1d5f7a, #277da1); } 
+        .bell-btn.A3,  .bell-btn.A4                  { background: linear-gradient(to bottom, #513970, #6a4c93); } 
+        .bell-btn.Bb3, .bell-btn.Bb4                 { background: linear-gradient(to bottom, #654e80, #8367a6); } 
+        .bell-btn.B3,  .bell-btn.B4                  { background: linear-gradient(to bottom, #c4436e, #f35b8c); } 
+        .bell-btn.C4,  .bell-btn.C5                  { background: linear-gradient(to bottom, #ab1f1f, #d62828); } 
+        .bell-btn.Db4, .bell-btn.Db5                 { background: linear-gradient(to bottom, #bd4931, #e65c40); } 
+        .bell-btn.D4,  .bell-btn.D5                  { background: linear-gradient(to bottom, #c75b20, #f3722c); } 
+        .bell-btn.Eb4, .bell-btn.Eb5                 { background: linear-gradient(to bottom, #cca23c, #f9c74f); } 
+        .bell-btn.E4,  .bell-btn.E5                  { background: linear-gradient(to bottom, #cca60f, #f9cd13); } 
+        .bell-btn.F4,  .bell-btn.F5                  { background: linear-gradient(to bottom, #729955, #90be6d); } 
+        .bell-btn.Gb4, .bell-btn.Gb5                 { background: linear-gradient(to bottom, #32826a, #43aa8b); } 
     </style>
 </head>
 <body>
