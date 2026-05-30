@@ -321,7 +321,6 @@
         btn.id = `btn-${note.id}`;
         btn.setAttribute('onclick', `handleInput('${note.id}')`);
         
-        // Injects the clean color badge system inside each traditional key
         btn.innerHTML = `<div class="color-badge">${note.solfege}</div>`;
 
         if (note.type === "black") {
@@ -348,14 +347,12 @@
 
     async function loadAllSounds() {
         for (let note of progression) {
-            // Load WAV files (Crucial voice files)
             try {
                 if(note.wavFile) wavBuffers[note.id] = await fetchAudioBuffer(note.wavFile);
             } catch (e) {
                 console.error(`Missing vocal file: ${note.wavFile}`, e);
             }
 
-            // Load MP3 files (Bell sounds)
             try {
                 if(note.mp3File) mp3Buffers[note.id] = await fetchAudioBuffer(note.mp3File);
             } catch (e) {
@@ -390,12 +387,10 @@
         }
 
         const now = audioCtx.currentTime;
-        const overlapTiming = 0.25; 
 
         let bellBufferToPlay = mp3Buffers[choice];
         let playbackRateValue = 1.0;
 
-        // --- AUTOMATIC PITCH-SHIFT ROUTING FALLBACKS ---
         if (!bellBufferToPlay) {
             const basePrefix = choice.replace(/[0-9]/g, ''); 
             
@@ -414,7 +409,7 @@
             }
         }
 
-        // Play the matched or pitch-corrected Bell Sound
+        // Play the matched or pitch-corrected Bell Sound instantly
         if (bellBufferToPlay) {
             const mp3Source = audioCtx.createBufferSource();
             mp3Source.buffer = bellBufferToPlay;
@@ -423,12 +418,12 @@
             mp3Source.start(now);
         }
 
-        // Play the exact matching vocal WAV file right after the bell
+        // Play the vocal file at the exact same moment (now)
         if (wavBuffers[choice]) {
             const wavSource = audioCtx.createBufferSource();
             wavSource.buffer = wavBuffers[choice];
             wavSource.connect(audioCtx.destination);
-            wavSource.start(now + overlapTiming);
+            wavSource.start(now);
         }
     }
 </script>
