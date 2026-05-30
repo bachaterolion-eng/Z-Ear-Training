@@ -12,7 +12,6 @@
             --text-main: #ffffff;
             --text-sub: #94a3b8;
             --keyboard-bg: #0b0f19;
-            --accent: #38bdf8;
         }
 
         body {
@@ -27,39 +26,9 @@
 
         .container { width: 100%; max-width: 1200px; display: flex; flex-direction: column; align-items: center; }
 
-        h1 { color: var(--accent); font-size: 2.5rem; font-weight: 800; text-align: center; margin: 10px 0 5px 0; width: 100%; letter-spacing: 1px; }
+        h1 { color: #38bdf8; font-size: 2.5rem; font-weight: 800; text-align: center; margin: 10px 0 5px 0; width: 100%; letter-spacing: 1px; }
 
-        .header-line { width: 80%; height: 2px; background: var(--accent); margin-bottom: 25px; opacity: 0.5; }
-
-        /* Audio Activation Overlay */
-        #audio-unlock-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.95);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .unlock-btn {
-            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
-            color: white;
-            border: none;
-            padding: 20px 40px;
-            font-size: 1.5rem;
-            font-weight: 800;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .unlock-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 30px rgba(56, 189, 248, 0.6);
-        }
+        .header-line { width: 80%; height: 2px; background: #38bdf8; margin-bottom: 25px; opacity: 0.5; }
 
         .game-panel {
             background-color: var(--panel-bg);
@@ -69,13 +38,13 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            gap: 20px;
         }
 
         .selection-panel {
             background: rgba(15, 23, 42, 0.6);
             border-radius: 15px;
             padding: 15px;
+            margin-bottom: 25px;
             width: 100%;
             border: 1px solid #334155;
         }
@@ -83,7 +52,7 @@
             font-size: 0.9rem;
             font-weight: 700;
             text-transform: uppercase;
-            color: var(--accent);
+            color: #38bdf8;
             margin-bottom: 10px;
             text-align: center;
         }
@@ -120,57 +89,7 @@
             cursor: pointer;
         }
 
-        /* Mode Toggle Switch */
-        .mode-toggle-zone {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: #0b0f19;
-            padding: 12px 25px;
-            border-radius: 50px;
-            border: 2px solid #334155;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            margin-bottom: 5px;
-        }
-        .mode-label {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text-sub);
-            transition: color 0.2s;
-        }
-        .mode-label.active { color: var(--accent); }
-        
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #334155;
-            transition: .3s;
-            border-radius: 34px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
-        }
-        input:checked + .slider { background-color: #0ea5e9; }
-        input:checked + .slider:before { transform: translateX(26px); }
-
-        #msg { font-weight: 600; color: var(--text-sub); min-height: 1.5rem; text-align: center; font-size: 1.1rem; }
+        #msg { font-weight: 600; color: #94a3b8; min-height: 1.5rem; text-align: center; margin-bottom: 20px; font-size: 1.1rem; }
 
         .keyboard-wrapper {
             background-color: var(--keyboard-bg);
@@ -196,7 +115,7 @@
 
         .keyboard-wrapper::-webkit-scrollbar { height: 10px; }
         .keyboard-wrapper::-webkit-scrollbar-track { background: #0b0f19; border-radius: 10px; }
-        .keyboard-wrapper::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+        .keyboard-wrapper::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 10px; }
         .keyboard-wrapper::-webkit-scrollbar-thumb:hover { background: #0ea5e9; }
 
         .piano-grid {
@@ -241,7 +160,7 @@
             padding-bottom: 15px;
         }
         
-        /* Traditional White Keys */
+        /* Traditional White Keys Styling */
         .naturals-layer .bell-btn {
             height: 232px;
             background: linear-gradient(to bottom, #eeeeee 0%, #ffffff 100%);
@@ -250,7 +169,7 @@
             border-bottom: 4px solid #cccccc;
         }
 
-        /* Traditional Black Keys */
+        /* Traditional Black Keys Styling */
         .sharps-layer .bell-btn {
             height: 145px;
             width: 38px;
@@ -295,6 +214,7 @@
             margin: 0 auto;
         }
 
+        /* Slightly smaller square badge for the black keys */
         .sharps-layer .color-badge {
             width: 32px;
             height: 32px;
@@ -302,19 +222,19 @@
             border-radius: 6px;
         }
 
-        /* Keyboard positioning wrappers */
-        .p-key-Ab3  { grid-column: 1; margin-left: 38px; }
-        .p-key-Bb3  { grid-column: 2; margin-left: 38px; }
-        .p-key-Db4  { grid-column: 4; margin-left: 38px; }
-        .p-key-Eb4  { grid-column: 5; margin-left: 38px; }
-        .p-key-Gb4  { grid-column: 7; margin-left: 38px; }
-        .p-key-Ab4  { grid-column: 8; margin-left: 38px; }
-        .p-key-Bb4  { grid-column: 9; margin-left: 38px; }
-        .p-key-Db5  { grid-column: 11; margin-left: 38px; }
-        .p-key-Eb5  { grid-column: 12; margin-left: 38px; }
-        .p-key-Gb5  { grid-column: 14; margin-left: 38px; }
+        /* Piano layout spacing configurations for accidental positions */
+        #btn-Ab3  { grid-column: 1; margin-left: 38px; }
+        #btn-Bb3  { grid-column: 2; margin-left: 38px; }
+        #btn-Db4  { grid-column: 4; margin-left: 38px; }
+        #btn-Eb4  { grid-column: 5; margin-left: 38px; }
+        #btn-Gb4  { grid-column: 7; margin-left: 38px; }
+        #btn-Ab4  { grid-column: 8; margin-left: 38px; }
+        #btn-Bb4  { grid-column: 9; margin-left: 38px; }
+        #btn-Db5  { grid-column: 11; margin-left: 38px; }
+        #btn-Eb5  { grid-column: 12; margin-left: 38px; }
+        #btn-Gb5  { grid-column: 14; margin-left: 38px; }
 
-        /* Color Badges Palettes */
+        /* Exact Original Tone Palette Mapped into the Inner Badges */
         .bell-btn.G3 .color-badge,  .bell-btn.G4 .color-badge,  .bell-btn.G5 .color-badge   { background: linear-gradient(to bottom, #3a6d6b, #4d908e); } 
         .bell-btn.Ab3 .color-badge, .bell-btn.Ab4 .color-badge, .bell-btn.Ab5 .color-badge  { background: linear-gradient(to bottom, #1d5f7a, #277da1); } 
         .bell-btn.A3 .color-badge,  .bell-btn.A4 .color-badge                  { background: linear-gradient(to bottom, #513970, #6a4c93); } 
@@ -330,12 +250,6 @@
     </style>
 </head>
 <body>
-
-<div id="audio-unlock-overlay">
-    <div style="font-size: 1.2rem; color: #94a3b8; text-align:center; padding: 0 20px;">Browsers require permission before playing instruments.</div>
-    <button class="unlock-btn" onclick="startAudioContext()">Click to Activate Audio</button>
-</div>
-
 <div class="container">
     <h1>Zayne's Ear Training</h1>
     <div class="header-line"></div>
@@ -351,31 +265,21 @@
             <div class="checkbox-grid" id="checkbox-container"></div>
         </div>
 
-        <div class="mode-toggle-zone">
-            <span class="mode-label active" id="lbl-sim">Simultaneous</span>
-            <label class="switch">
-                <input type="checkbox" id="mode-switch-checkbox" onchange="updateToggleLabels()">
-                <span class="slider"></span>
-            </label>
-            <span class="mode-label" id="lbl-stagger">Bell First</span>
-        </div>
-
-        <div id="msg">Awaiting engine startup...</div>
+        <div id="msg">Loading audio components... Please wait.</div>
 
         <div class="keyboard-wrapper">
             <div class="piano-grid">
-                <div class="sharps-layer" id="piano-sharps"></div>
-                <div class="naturals-layer" id="piano-naturals"></div>
+                <div class="sharps-layer" id="sharps-container"></div>
+                <div class="naturals-layer" id="naturals-container"></div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    let audioCtx;
-    let mp3Buffers = {}; 
-    let wavBuffers = {}; 
-
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new AudioContext();
+    
     const progression = [
         { id: "G3",  solfege: "So 3", mp3File: "So 3.mp3", wavFile: "So 3.wav", type: "white", style: "G3" },
         { id: "Ab3", solfege: "Si 3", mp3File: "Si 3.mp3", wavFile: "Si 3.wav", type: "black", style: "Ab3" },
@@ -403,17 +307,27 @@
         { id: "Gb5", solfege: "Fi 5", mp3File: "Fi 5.mp3", wavFile: "Fi 5.wav", type: "black", style: "Gb5" },
         { id: "G5",  solfege: "So 5", mp3File: "So 5.mp3", wavFile: "So 5.wav", type: "white", style: "G5" }
     ];
+    
+    let mp3Buffers = {}; 
+    let wavBuffers = {}; 
 
-    // Assemble Interface Elements immediately
+    const sharpsRow = document.getElementById('sharps-container');
+    const naturalsRow = document.getElementById('naturals-container');
+    const checkboxGrid = document.getElementById('checkbox-container');
+
     progression.forEach((note) => {
         const btn = document.createElement('button');
-        btn.className = `bell-btn ${note.style} p-key-${note.id}`;
+        btn.className = `bell-btn ${note.style}`;
         btn.id = `btn-${note.id}`;
         btn.setAttribute('onclick', `handleInput('${note.id}')`);
+        
         btn.innerHTML = `<div class="color-badge">${note.solfege}</div>`;
 
-        if (note.type === "black") document.getElementById('piano-sharps').appendChild(btn);
-        else document.getElementById('piano-naturals').appendChild(btn);
+        if (note.type === "black") {
+            sharpsRow.appendChild(btn);
+        } else {
+            naturalsRow.appendChild(btn);
+        }
 
         const label = document.createElement('label');
         label.className = 'check-item';
@@ -421,26 +335,8 @@
             <input type="checkbox" value="${note.id}" checked id="chk-${note.id}" onchange="syncPoolUI()">
             <span>${note.solfege}</span>
         `;
-        document.getElementById('checkbox-container').appendChild(label);
+        checkboxGrid.appendChild(label);
     });
-
-    function updateToggleLabels() {
-        const isChecked = document.getElementById('mode-switch-checkbox').checked;
-        document.getElementById('lbl-sim').classList.toggle('active', !isChecked);
-        document.getElementById('lbl-stagger').classList.toggle('active', isChecked);
-    }
-
-    // Triggered upon explicit button interaction
-    function startAudioContext() {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        audioCtx = new AudioContextClass();
-        
-        // Remove overlay panel
-        document.getElementById('audio-unlock-overlay').style.display = 'none';
-        document.getElementById('msg').innerText = "Loading samples... please hold.";
-        
-        loadAllSounds();
-    }
 
     async function fetchAudioBuffer(url) {
         const response = await fetch(url);
@@ -454,23 +350,24 @@
             try {
                 if(note.wavFile) wavBuffers[note.id] = await fetchAudioBuffer(note.wavFile);
             } catch (e) {
-                console.error(`Missing vocal file: ${note.wavFile}`);
+                console.error(`Missing vocal file: ${note.wavFile}`, e);
             }
 
             try {
                 if(note.mp3File) mp3Buffers[note.id] = await fetchAudioBuffer(note.mp3File);
             } catch (e) {
-                console.log(`Fallback mapping active for note: ${note.id}`);
+                console.log(`Using smart fallback routing for note: ${note.id}`);
             }
         }
-        document.getElementById('msg').innerText = "Ready to play! Select notes or flip modes anytime.";
+        document.getElementById('msg').innerText = "Ready! Every single key is linked to a bell and voice now.";
     }
+    loadAllSounds();
 
     function syncPoolUI() {
         progression.forEach(note => {
             const chk = document.getElementById(`chk-${note.id}`);
-            const b = document.getElementById(`btn-${note.id}`);
-            b.classList.toggle('dimmed', !chk.checked);
+            const btn = document.getElementById(`btn-${note.id}`);
+            btn.classList.toggle('dimmed', !chk.checked);
         });
     }
 
@@ -485,20 +382,18 @@
     }
 
     function handleInput(choice) {
-        if (!audioCtx) return;
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
 
         const now = audioCtx.currentTime;
-        const isStaggeredMode = document.getElementById('mode-switch-checkbox').checked;
 
         let bellBufferToPlay = mp3Buffers[choice];
         let playbackRateValue = 1.0;
 
-        // Fallbacks
         if (!bellBufferToPlay) {
             const basePrefix = choice.replace(/[0-9]/g, ''); 
+            
             if (choice.includes('5')) {
                 const fallbackId = `${basePrefix}4`;
                 if (mp3Buffers[fallbackId]) {
@@ -514,38 +409,24 @@
             }
         }
 
-        // Play Bell Sound at Full Strength (Volume 1.0)
+        // Play the matched or pitch-corrected Bell Sound instantly
         if (bellBufferToPlay) {
             const mp3Source = audioCtx.createBufferSource();
             mp3Source.buffer = bellBufferToPlay;
             mp3Source.playbackRate.value = playbackRateValue;
-            
-            // Safe, Direct Channel Connection
             mp3Source.connect(audioCtx.destination);
             mp3Source.start(now);
         }
 
-        // Play Vocal Sound with internal volume balancing node
+        // Play the vocal file at the exact same moment (now)
         if (wavBuffers[choice]) {
             const wavSource = audioCtx.createBufferSource();
             wavSource.buffer = wavBuffers[choice];
-            
-            // Build localized inline node layout to keep it soft
-            const localGain = audioCtx.createGain();
-            localGain.gain.value = 0.35; // Quiet vocal mix
-            
-            wavSource.connect(localGain);
-            localGain.connect(audioCtx.destination);
-
-            if (!isStaggeredMode) {
-                wavSource.start(now); // Together
-            } else {
-                wavSource.start(now + 0.35); // Staggered delay loop
-            }
+            wavSource.connect(audioCtx.destination);
+            wavSource.start(now);
         }
     }
 </script>
 </body>
 </html>
 
-```
