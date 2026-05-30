@@ -31,6 +31,36 @@
 
         .header-line { width: 80%; height: 2px; background: var(--accent); margin-bottom: 25px; opacity: 0.5; }
 
+        /* Audio Activation Overlay */
+        #audio-unlock-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.95);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .unlock-btn {
+            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .unlock-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(56, 189, 248, 0.6);
+        }
+
         .game-panel {
             background-color: var(--panel-bg);
             padding: 25px;
@@ -90,7 +120,7 @@
             cursor: pointer;
         }
 
-        /* --- MODE SWITCH TOGGLE STYLING --- */
+        /* Mode Toggle Switch */
         .mode-toggle-zone {
             display: flex;
             align-items: center;
@@ -211,7 +241,7 @@
             padding-bottom: 15px;
         }
         
-        /* Traditional White Keys Styling */
+        /* Traditional White Keys */
         .naturals-layer .bell-btn {
             height: 232px;
             background: linear-gradient(to bottom, #eeeeee 0%, #ffffff 100%);
@@ -220,7 +250,7 @@
             border-bottom: 4px solid #cccccc;
         }
 
-        /* Traditional Black Keys Styling */
+        /* Traditional Black Keys */
         .sharps-layer .bell-btn {
             height: 145px;
             width: 38px;
@@ -265,7 +295,6 @@
             margin: 0 auto;
         }
 
-        /* Slightly smaller square badge for the black keys */
         .sharps-layer .color-badge {
             width: 32px;
             height: 32px;
@@ -273,7 +302,7 @@
             border-radius: 6px;
         }
 
-        /* Piano layout spacing configurations for accidental positions */
+        /* Keyboard positioning wrappers */
         .p-key-Ab3  { grid-column: 1; margin-left: 38px; }
         .p-key-Bb3  { grid-column: 2; margin-left: 38px; }
         .p-key-Db4  { grid-column: 4; margin-left: 38px; }
@@ -285,7 +314,7 @@
         .p-key-Eb5  { grid-column: 12; margin-left: 38px; }
         .p-key-Gb5  { grid-column: 14; margin-left: 38px; }
 
-        /* Color Palette Layout for Inner Badges */
+        /* Color Badges Palettes */
         .bell-btn.G3 .color-badge,  .bell-btn.G4 .color-badge,  .bell-btn.G5 .color-badge   { background: linear-gradient(to bottom, #3a6d6b, #4d908e); } 
         .bell-btn.Ab3 .color-badge, .bell-btn.Ab4 .color-badge, .bell-btn.Ab5 .color-badge  { background: linear-gradient(to bottom, #1d5f7a, #277da1); } 
         .bell-btn.A3 .color-badge,  .bell-btn.A4 .color-badge                  { background: linear-gradient(to bottom, #513970, #6a4c93); } 
@@ -301,6 +330,12 @@
     </style>
 </head>
 <body>
+
+<div id="audio-unlock-overlay">
+    <div style="font-size: 1.2rem; color: #94a3b8; text-align:center; padding: 0 20px;">Browsers require permission before playing instruments.</div>
+    <button class="unlock-btn" onclick="startAudioContext()">Click to Activate Audio</button>
+</div>
+
 <div class="container">
     <h1>Zayne's Ear Training</h1>
     <div class="header-line"></div>
@@ -325,7 +360,7 @@
             <span class="mode-label" id="lbl-stagger">Bell First</span>
         </div>
 
-        <div id="msg">Loading audio components... Please wait.</div>
+        <div id="msg">Awaiting engine startup...</div>
 
         <div class="keyboard-wrapper">
             <div class="piano-grid">
@@ -337,18 +372,10 @@
 </div>
 
 <script>
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    const audioCtx = new AudioContext();
-    
-    // --- MASTER AUDIO ARCHITECTURE (Prevents browser-level muting) ---
-    const masterBellGain = audioCtx.createGain();
-    masterBellGain.gain.value = 1.0; 
-    masterBellGain.connect(audioCtx.destination);
+    let audioCtx;
+    let mp3Buffers = {}; 
+    let wavBuffers = {}; 
 
-    const masterVocalGain = audioCtx.createGain();
-    masterVocalGain.gain.value = 0.40; // Softened vocal level so bells take priority
-    masterVocalGain.connect(audioCtx.destination);
-    
     const progression = [
         { id: "G3",  solfege: "So 3", mp3File: "So 3.mp3", wavFile: "So 3.wav", type: "white", style: "G3" },
         { id: "Ab3", solfege: "Si 3", mp3File: "Si 3.mp3", wavFile: "Si 3.wav", type: "black", style: "Ab3" },
@@ -376,11 +403,8 @@
         { id: "Gb5", solfege: "Fi 5", mp3File: "Fi 5.mp3", wavFile: "Fi 5.wav", type: "black", style: "Gb5" },
         { id: "G5",  solfege: "So 5", mp3File: "So 5.mp3", wavFile: "So 5.wav", type: "white", style: "G5" }
     ];
-    
-    let mp3Buffers = {}; 
-    let wavBuffers = {}; 
 
-    // Build single keyboard interface
+    // Assemble Interface Elements immediately
     progression.forEach((note) => {
         const btn = document.createElement('button');
         btn.className = `bell-btn ${note.style} p-key-${note.id}`;
@@ -391,7 +415,6 @@
         if (note.type === "black") document.getElementById('piano-sharps').appendChild(btn);
         else document.getElementById('piano-naturals').appendChild(btn);
 
-        // Control Checkboxes
         const label = document.createElement('label');
         label.className = 'check-item';
         label.innerHTML = `
@@ -407,6 +430,18 @@
         document.getElementById('lbl-stagger').classList.toggle('active', isChecked);
     }
 
+    // Triggered upon explicit button interaction
+    function startAudioContext() {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+        
+        // Remove overlay panel
+        document.getElementById('audio-unlock-overlay').style.display = 'none';
+        document.getElementById('msg').innerText = "Loading samples... please hold.";
+        
+        loadAllSounds();
+    }
+
     async function fetchAudioBuffer(url) {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP error ${response.status}`);
@@ -419,18 +454,17 @@
             try {
                 if(note.wavFile) wavBuffers[note.id] = await fetchAudioBuffer(note.wavFile);
             } catch (e) {
-                console.error(`Missing vocal file: ${note.wavFile}`, e);
+                console.error(`Missing vocal file: ${note.wavFile}`);
             }
 
             try {
                 if(note.mp3File) mp3Buffers[note.id] = await fetchAudioBuffer(note.mp3File);
             } catch (e) {
-                console.log(`Using smart fallback routing for note: ${note.id}`);
+                console.log(`Fallback mapping active for note: ${note.id}`);
             }
         }
-        document.getElementById('msg').innerText = "Ready! Balanced audio buffers have been initialized.";
+        document.getElementById('msg').innerText = "Ready to play! Select notes or flip modes anytime.";
     }
-    loadAllSounds();
 
     function syncPoolUI() {
         progression.forEach(note => {
@@ -451,6 +485,7 @@
     }
 
     function handleInput(choice) {
+        if (!audioCtx) return;
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
@@ -461,10 +496,9 @@
         let bellBufferToPlay = mp3Buffers[choice];
         let playbackRateValue = 1.0;
 
-        // --- AUTOMATIC PITCH-SHIFT ROUTING FALLBACKS ---
+        // Fallbacks
         if (!bellBufferToPlay) {
             const basePrefix = choice.replace(/[0-9]/g, ''); 
-            
             if (choice.includes('5')) {
                 const fallbackId = `${basePrefix}4`;
                 if (mp3Buffers[fallbackId]) {
@@ -480,25 +514,33 @@
             }
         }
 
-        // Play Bell Sound (Routed explicitly into the clean Gain Channel)
+        // Play Bell Sound at Full Strength (Volume 1.0)
         if (bellBufferToPlay) {
             const mp3Source = audioCtx.createBufferSource();
             mp3Source.buffer = bellBufferToPlay;
             mp3Source.playbackRate.value = playbackRateValue;
-            mp3Source.connect(masterBellGain);
+            
+            // Safe, Direct Channel Connection
+            mp3Source.connect(audioCtx.destination);
             mp3Source.start(now);
         }
 
-        // Play Vocal Sound (Routed explicitly into the separate soft Gain Channel)
+        // Play Vocal Sound with internal volume balancing node
         if (wavBuffers[choice]) {
             const wavSource = audioCtx.createBufferSource();
             wavSource.buffer = wavBuffers[choice];
-            wavSource.connect(masterVocalGain);
+            
+            // Build localized inline node layout to keep it soft
+            const localGain = audioCtx.createGain();
+            localGain.gain.value = 0.35; // Quiet vocal mix
+            
+            wavSource.connect(localGain);
+            localGain.connect(audioCtx.destination);
 
             if (!isStaggeredMode) {
-                wavSource.start(now); // Simultaneous Mode
+                wavSource.start(now); // Together
             } else {
-                wavSource.start(now + 0.30); // Bell First Mode (Plays 0.3s after bell hits)
+                wavSource.start(now + 0.35); // Staggered delay loop
             }
         }
     }
@@ -506,3 +548,4 @@
 </body>
 </html>
 
+```
