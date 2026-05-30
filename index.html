@@ -38,13 +38,13 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
+            gap: 20px;
         }
 
         .selection-panel {
             background: rgba(15, 23, 42, 0.6);
             border-radius: 15px;
             padding: 15px;
-            margin-bottom: 25px;
             width: 100%;
             border: 1px solid #334155;
         }
@@ -89,7 +89,17 @@
             cursor: pointer;
         }
 
-        #msg { font-weight: 600; color: #94a3b8; min-height: 1.5rem; text-align: center; margin-bottom: 20px; font-size: 1.1rem; }
+        #msg { font-weight: 600; color: #94a3b8; min-height: 1.5rem; text-align: center; font-size: 1.1rem; }
+
+        .keyboard-section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #38bdf8;
+            align-self: flex-start;
+            margin-left: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
         .keyboard-wrapper {
             background-color: var(--keyboard-bg);
@@ -103,6 +113,7 @@
             -webkit-overflow-scrolling: touch; 
             border: 4px solid #1e293b;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            margin-bottom: 10px;
         }
 
         @media screen and (orientation: landscape) {
@@ -223,16 +234,16 @@
         }
 
         /* Piano layout spacing configurations for accidental positions */
-        #btn-Ab3  { grid-column: 1; margin-left: 38px; }
-        #btn-Bb3  { grid-column: 2; margin-left: 38px; }
-        #btn-Db4  { grid-column: 4; margin-left: 38px; }
-        #btn-Eb4  { grid-column: 5; margin-left: 38px; }
-        #btn-Gb4  { grid-column: 7; margin-left: 38px; }
-        #btn-Ab4  { grid-column: 8; margin-left: 38px; }
-        #btn-Bb4  { grid-column: 9; margin-left: 38px; }
-        #btn-Db5  { grid-column: 11; margin-left: 38px; }
-        #btn-Eb5  { grid-column: 12; margin-left: 38px; }
-        #btn-Gb5  { grid-column: 14; margin-left: 38px; }
+        .p-key-Ab3  { grid-column: 1; margin-left: 38px; }
+        .p-key-Bb3  { grid-column: 2; margin-left: 38px; }
+        .p-key-Db4  { grid-column: 4; margin-left: 38px; }
+        .p-key-Eb4  { grid-column: 5; margin-left: 38px; }
+        .p-key-Gb4  { grid-column: 7; margin-left: 38px; }
+        .p-key-Ab4  { grid-column: 8; margin-left: 38px; }
+        .p-key-Bb4  { grid-column: 9; margin-left: 38px; }
+        .p-key-Db5  { grid-column: 11; margin-left: 38px; }
+        .p-key-Eb5  { grid-column: 12; margin-left: 38px; }
+        .p-key-Gb5  { grid-column: 14; margin-left: 38px; }
 
         /* Exact Original Tone Palette Mapped into the Inner Badges */
         .bell-btn.G3 .color-badge,  .bell-btn.G4 .color-badge,  .bell-btn.G5 .color-badge   { background: linear-gradient(to bottom, #3a6d6b, #4d908e); } 
@@ -267,10 +278,19 @@
 
         <div id="msg">Loading audio components... Please wait.</div>
 
+        <div class="keyboard-section-title">Piano 1: Both Sounds at the Same Time</div>
         <div class="keyboard-wrapper">
             <div class="piano-grid">
-                <div class="sharps-layer" id="sharps-container"></div>
-                <div class="naturals-layer" id="naturals-container"></div>
+                <div class="sharps-layer" id="p1-sharps"></div>
+                <div class="naturals-layer" id="p1-naturals"></div>
+            </div>
+        </div>
+
+        <div class="keyboard-section-title">Piano 2: Bell Sound First, Then Vocal</div>
+        <div class="keyboard-wrapper">
+            <div class="piano-grid">
+                <div class="sharps-layer" id="p2-sharps"></div>
+                <div class="naturals-layer" id="p2-naturals"></div>
             </div>
         </div>
     </div>
@@ -279,6 +299,11 @@
 <script>
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioCtx = new AudioContext();
+    
+    // Vocal Volume Balancer: 0.45 reduces vocal volume so it matches the bells perfectly
+    const vocalGainNode = audioCtx.createGain();
+    vocalGainNode.gain.value = 0.45;
+    vocalGainNode.connect(audioCtx.destination);
     
     const progression = [
         { id: "G3",  solfege: "So 3", mp3File: "So 3.mp3", wavFile: "So 3.wav", type: "white", style: "G3" },
@@ -311,31 +336,36 @@
     let mp3Buffers = {}; 
     let wavBuffers = {}; 
 
-    const sharpsRow = document.getElementById('sharps-container');
-    const naturalsRow = document.getElementById('naturals-container');
-    const checkboxGrid = document.getElementById('checkbox-container');
-
+    // Build the two keyboard interfaces
     progression.forEach((note) => {
-        const btn = document.createElement('button');
-        btn.className = `bell-btn ${note.style}`;
-        btn.id = `btn-${note.id}`;
-        btn.setAttribute('onclick', `handleInput('${note.id}')`);
-        
-        btn.innerHTML = `<div class="color-badge">${note.solfege}</div>`;
+        // Piano 1 Keys
+        const btn1 = document.createElement('button');
+        btn1.className = `bell-btn ${note.style} p-key-${note.id}`;
+        btn1.id = `p1-btn-${note.id}`;
+        btn1.setAttribute('onclick', `handleInput('${note.id}', 'simultaneous')`);
+        btn1.innerHTML = `<div class="color-badge">${note.solfege}</div>`;
 
-        if (note.type === "black") {
-            sharpsRow.appendChild(btn);
-        } else {
-            naturalsRow.appendChild(btn);
-        }
+        if (note.type === "black") document.getElementById('p1-sharps').appendChild(btn1);
+        else document.getElementById('p1-naturals').appendChild(btn1);
 
+        // Piano 2 Keys
+        const btn2 = document.createElement('button');
+        btn2.className = `bell-btn ${note.style} p-key-${note.id}`;
+        btn2.id = `p2-btn-${note.id}`;
+        btn2.setAttribute('onclick', `handleInput('${note.id}', 'staggered')`);
+        btn2.innerHTML = `<div class="color-badge">${note.solfege}</div>`;
+
+        if (note.type === "black") document.getElementById('p2-sharps').appendChild(btn2);
+        else document.getElementById('p2-naturals').appendChild(btn2);
+
+        // Master Control Checkboxes
         const label = document.createElement('label');
         label.className = 'check-item';
         label.innerHTML = `
             <input type="checkbox" value="${note.id}" checked id="chk-${note.id}" onchange="syncPoolUI()">
             <span>${note.solfege}</span>
         `;
-        checkboxGrid.appendChild(label);
+        document.getElementById('checkbox-container').appendChild(label);
     });
 
     async function fetchAudioBuffer(url) {
@@ -359,15 +389,18 @@
                 console.log(`Using smart fallback routing for note: ${note.id}`);
             }
         }
-        document.getElementById('msg').innerText = "Ready! Every single key is linked to a bell and voice now.";
+        document.getElementById('msg').innerText = "Ready! Both pianos are linked with volume-balanced outputs.";
     }
     loadAllSounds();
 
     function syncPoolUI() {
         progression.forEach(note => {
             const chk = document.getElementById(`chk-${note.id}`);
-            const btn = document.getElementById(`btn-${note.id}`);
-            btn.classList.toggle('dimmed', !chk.checked);
+            const b1 = document.getElementById(`p1-btn-${note.id}`);
+            const b2 = document.getElementById(`p2-btn-${note.id}`);
+            
+            b1.classList.toggle('dimmed', !chk.checked);
+            b2.classList.toggle('dimmed', !chk.checked);
         });
     }
 
@@ -381,16 +414,16 @@
         syncPoolUI();
     }
 
-    function handleInput(choice) {
+    function handleInput(choice, playMode) {
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
 
         const now = audioCtx.currentTime;
-
         let bellBufferToPlay = mp3Buffers[choice];
         let playbackRateValue = 1.0;
 
+        // --- AUTOMATIC PITCH-SHIFT ROUTING FALLBACKS ---
         if (!bellBufferToPlay) {
             const basePrefix = choice.replace(/[0-9]/g, ''); 
             
@@ -409,21 +442,26 @@
             }
         }
 
-        // Play the matched or pitch-corrected Bell Sound instantly
+        // Play Bell Sound (Always instantly at time 'now')
         if (bellBufferToPlay) {
             const mp3Source = audioCtx.createBufferSource();
             mp3Source.buffer = bellBufferToPlay;
             mp3Source.playbackRate.value = playbackRateValue;
-            mp3Source.connect(audioCtx.destination);
+            mp3Source.connect(audioCtx.destination); // Direct connection for full bell presence
             mp3Source.start(now);
         }
 
-        // Play the vocal file at the exact same moment (now)
+        // Play Vocal Sound (Routed through the gain node to keep it quiet)
         if (wavBuffers[choice]) {
             const wavSource = audioCtx.createBufferSource();
             wavSource.buffer = wavBuffers[choice];
-            wavSource.connect(audioCtx.destination);
-            wavSource.start(now);
+            wavSource.connect(vocalGainNode); // Routed through our master volume drop node
+
+            if (playMode === 'simultaneous') {
+                wavSource.start(now); // Piano 1: Perfect simultaneous sync
+            } else {
+                wavSource.start(now + 0.25); // Piano 2: Staggered mode (Bell first, vocal after 0.25s)
+            }
         }
     }
 </script>
