@@ -12,6 +12,7 @@
             --text-main: #ffffff;
             --text-sub: #94a3b8;
             --keyboard-bg: #0b0f19;
+            --accent: #38bdf8;
         }
 
         body {
@@ -26,9 +27,9 @@
 
         .container { width: 100%; max-width: 1200px; display: flex; flex-direction: column; align-items: center; }
 
-        h1 { color: #38bdf8; font-size: 2.5rem; font-weight: 800; text-align: center; margin: 10px 0 5px 0; width: 100%; letter-spacing: 1px; }
+        h1 { color: var(--accent); font-size: 2.5rem; font-weight: 800; text-align: center; margin: 10px 0 5px 0; width: 100%; letter-spacing: 1px; }
 
-        .header-line { width: 80%; height: 2px; background: #38bdf8; margin-bottom: 25px; opacity: 0.5; }
+        .header-line { width: 80%; height: 2px; background: var(--accent); margin-bottom: 25px; opacity: 0.5; }
 
         .game-panel {
             background-color: var(--panel-bg);
@@ -52,7 +53,7 @@
             font-size: 0.9rem;
             font-weight: 700;
             text-transform: uppercase;
-            color: #38bdf8;
+            color: var(--accent);
             margin-bottom: 10px;
             text-align: center;
         }
@@ -89,17 +90,57 @@
             cursor: pointer;
         }
 
-        #msg { font-weight: 600; color: #94a3b8; min-height: 1.5rem; text-align: center; font-size: 1.1rem; }
-
-        .keyboard-section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #38bdf8;
-            align-self: flex-start;
-            margin-left: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        /* --- MODE SWITCH TOGGLE STYLING --- */
+        .mode-toggle-zone {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #0b0f19;
+            padding: 12px 25px;
+            border-radius: 50px;
+            border: 2px solid #334155;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            margin-bottom: 5px;
         }
+        .mode-label {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            transition: color 0.2s;
+        }
+        .mode-label.active { color: var(--accent); }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #334155;
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+        }
+        input:checked + .slider { background-color: #0ea5e9; }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        #msg { font-weight: 600; color: var(--text-sub); min-height: 1.5rem; text-align: center; font-size: 1.1rem; }
 
         .keyboard-wrapper {
             background-color: var(--keyboard-bg);
@@ -113,7 +154,6 @@
             -webkit-overflow-scrolling: touch; 
             border: 4px solid #1e293b;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-            margin-bottom: 10px;
         }
 
         @media screen and (orientation: landscape) {
@@ -126,7 +166,7 @@
 
         .keyboard-wrapper::-webkit-scrollbar { height: 10px; }
         .keyboard-wrapper::-webkit-scrollbar-track { background: #0b0f19; border-radius: 10px; }
-        .keyboard-wrapper::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 10px; }
+        .keyboard-wrapper::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
         .keyboard-wrapper::-webkit-scrollbar-thumb:hover { background: #0ea5e9; }
 
         .piano-grid {
@@ -245,7 +285,7 @@
         .p-key-Eb5  { grid-column: 12; margin-left: 38px; }
         .p-key-Gb5  { grid-column: 14; margin-left: 38px; }
 
-        /* Exact Original Tone Palette Mapped into the Inner Badges */
+        /* Color Palette Layout for Inner Badges */
         .bell-btn.G3 .color-badge,  .bell-btn.G4 .color-badge,  .bell-btn.G5 .color-badge   { background: linear-gradient(to bottom, #3a6d6b, #4d908e); } 
         .bell-btn.Ab3 .color-badge, .bell-btn.Ab4 .color-badge, .bell-btn.Ab5 .color-badge  { background: linear-gradient(to bottom, #1d5f7a, #277da1); } 
         .bell-btn.A3 .color-badge,  .bell-btn.A4 .color-badge                  { background: linear-gradient(to bottom, #513970, #6a4c93); } 
@@ -276,21 +316,21 @@
             <div class="checkbox-grid" id="checkbox-container"></div>
         </div>
 
-        <div id="msg">Loading audio components... Please wait.</div>
-
-        <div class="keyboard-section-title">Piano 1: Both Sounds at the Same Time</div>
-        <div class="keyboard-wrapper">
-            <div class="piano-grid">
-                <div class="sharps-layer" id="p1-sharps"></div>
-                <div class="naturals-layer" id="p1-naturals"></div>
-            </div>
+        <div class="mode-toggle-zone">
+            <span class="mode-label active" id="lbl-sim">Simultaneous</span>
+            <label class="switch">
+                <input type="checkbox" id="mode-switch-checkbox" onchange="updateToggleLabels()">
+                <span class="slider"></span>
+            </label>
+            <span class="mode-label" id="lbl-stagger">Bell First</span>
         </div>
 
-        <div class="keyboard-section-title">Piano 2: Bell Sound First, Then Vocal</div>
+        <div id="msg">Loading audio components... Please wait.</div>
+
         <div class="keyboard-wrapper">
             <div class="piano-grid">
-                <div class="sharps-layer" id="p2-sharps"></div>
-                <div class="naturals-layer" id="p2-naturals"></div>
+                <div class="sharps-layer" id="piano-sharps"></div>
+                <div class="naturals-layer" id="piano-naturals"></div>
             </div>
         </div>
     </div>
@@ -300,10 +340,14 @@
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioCtx = new AudioContext();
     
-    // Vocal Volume Balancer: 0.45 reduces vocal volume so it matches the bells perfectly
-    const vocalGainNode = audioCtx.createGain();
-    vocalGainNode.gain.value = 0.45;
-    vocalGainNode.connect(audioCtx.destination);
+    // --- MASTER AUDIO ARCHITECTURE (Prevents browser-level muting) ---
+    const masterBellGain = audioCtx.createGain();
+    masterBellGain.gain.value = 1.0; 
+    masterBellGain.connect(audioCtx.destination);
+
+    const masterVocalGain = audioCtx.createGain();
+    masterVocalGain.gain.value = 0.40; // Softened vocal level so bells take priority
+    masterVocalGain.connect(audioCtx.destination);
     
     const progression = [
         { id: "G3",  solfege: "So 3", mp3File: "So 3.mp3", wavFile: "So 3.wav", type: "white", style: "G3" },
@@ -336,29 +380,18 @@
     let mp3Buffers = {}; 
     let wavBuffers = {}; 
 
-    // Build the two keyboard interfaces
+    // Build single keyboard interface
     progression.forEach((note) => {
-        // Piano 1 Keys
-        const btn1 = document.createElement('button');
-        btn1.className = `bell-btn ${note.style} p-key-${note.id}`;
-        btn1.id = `p1-btn-${note.id}`;
-        btn1.setAttribute('onclick', `handleInput('${note.id}', 'simultaneous')`);
-        btn1.innerHTML = `<div class="color-badge">${note.solfege}</div>`;
+        const btn = document.createElement('button');
+        btn.className = `bell-btn ${note.style} p-key-${note.id}`;
+        btn.id = `btn-${note.id}`;
+        btn.setAttribute('onclick', `handleInput('${note.id}')`);
+        btn.innerHTML = `<div class="color-badge">${note.solfege}</div>`;
 
-        if (note.type === "black") document.getElementById('p1-sharps').appendChild(btn1);
-        else document.getElementById('p1-naturals').appendChild(btn1);
+        if (note.type === "black") document.getElementById('piano-sharps').appendChild(btn);
+        else document.getElementById('piano-naturals').appendChild(btn);
 
-        // Piano 2 Keys
-        const btn2 = document.createElement('button');
-        btn2.className = `bell-btn ${note.style} p-key-${note.id}`;
-        btn2.id = `p2-btn-${note.id}`;
-        btn2.setAttribute('onclick', `handleInput('${note.id}', 'staggered')`);
-        btn2.innerHTML = `<div class="color-badge">${note.solfege}</div>`;
-
-        if (note.type === "black") document.getElementById('p2-sharps').appendChild(btn2);
-        else document.getElementById('p2-naturals').appendChild(btn2);
-
-        // Master Control Checkboxes
+        // Control Checkboxes
         const label = document.createElement('label');
         label.className = 'check-item';
         label.innerHTML = `
@@ -367,6 +400,12 @@
         `;
         document.getElementById('checkbox-container').appendChild(label);
     });
+
+    function updateToggleLabels() {
+        const isChecked = document.getElementById('mode-switch-checkbox').checked;
+        document.getElementById('lbl-sim').classList.toggle('active', !isChecked);
+        document.getElementById('lbl-stagger').classList.toggle('active', isChecked);
+    }
 
     async function fetchAudioBuffer(url) {
         const response = await fetch(url);
@@ -389,18 +428,15 @@
                 console.log(`Using smart fallback routing for note: ${note.id}`);
             }
         }
-        document.getElementById('msg').innerText = "Ready! Both pianos are linked with volume-balanced outputs.";
+        document.getElementById('msg').innerText = "Ready! Balanced audio buffers have been initialized.";
     }
     loadAllSounds();
 
     function syncPoolUI() {
         progression.forEach(note => {
             const chk = document.getElementById(`chk-${note.id}`);
-            const b1 = document.getElementById(`p1-btn-${note.id}`);
-            const b2 = document.getElementById(`p2-btn-${note.id}`);
-            
-            b1.classList.toggle('dimmed', !chk.checked);
-            b2.classList.toggle('dimmed', !chk.checked);
+            const b = document.getElementById(`btn-${note.id}`);
+            b.classList.toggle('dimmed', !chk.checked);
         });
     }
 
@@ -414,12 +450,14 @@
         syncPoolUI();
     }
 
-    function handleInput(choice, playMode) {
+    function handleInput(choice) {
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
 
         const now = audioCtx.currentTime;
+        const isStaggeredMode = document.getElementById('mode-switch-checkbox').checked;
+
         let bellBufferToPlay = mp3Buffers[choice];
         let playbackRateValue = 1.0;
 
@@ -442,28 +480,29 @@
             }
         }
 
-        // Play Bell Sound (Always instantly at time 'now')
+        // Play Bell Sound (Routed explicitly into the clean Gain Channel)
         if (bellBufferToPlay) {
             const mp3Source = audioCtx.createBufferSource();
             mp3Source.buffer = bellBufferToPlay;
             mp3Source.playbackRate.value = playbackRateValue;
-            mp3Source.connect(audioCtx.destination); // Direct connection for full bell presence
+            mp3Source.connect(masterBellGain);
             mp3Source.start(now);
         }
 
-        // Play Vocal Sound (Routed through the gain node to keep it quiet)
+        // Play Vocal Sound (Routed explicitly into the separate soft Gain Channel)
         if (wavBuffers[choice]) {
             const wavSource = audioCtx.createBufferSource();
             wavSource.buffer = wavBuffers[choice];
-            wavSource.connect(vocalGainNode); // Routed through our master volume drop node
+            wavSource.connect(masterVocalGain);
 
-            if (playMode === 'simultaneous') {
-                wavSource.start(now); // Piano 1: Perfect simultaneous sync
+            if (!isStaggeredMode) {
+                wavSource.start(now); // Simultaneous Mode
             } else {
-                wavSource.start(now + 0.25); // Piano 2: Staggered mode (Bell first, vocal after 0.25s)
+                wavSource.start(now + 0.30); // Bell First Mode (Plays 0.3s after bell hits)
             }
         }
     }
 </script>
 </body>
 </html>
+
