@@ -303,20 +303,24 @@
         let bellBufferToPlay = bellBuffers[choice];
         let playbackRateValue = 1.0;
 
+        // If the exact octave file isn't loaded, calculate the fallback using the new naming system
         if (!bellBufferToPlay) {
-            const basePrefix = choice.replace(/[0-9]/g, ''); 
-            
-            if (choice.includes('5')) {
-                const fallbackId = `${basePrefix}4`;
-                if (bellBuffers[fallbackId]) {
-                    bellBufferToPlay = bellBuffers[fallbackId];
-                    playbackRateValue = 2.0; 
-                }
-            } else if (choice.includes('3')) {
-                const fallbackId = `${basePrefix}4`;
-                if (bellBuffers[fallbackId]) {
-                    bellBufferToPlay = bellBuffers[fallbackId];
-                    playbackRateValue = 0.5; 
+            const currentNoteConfig = progression.find(n => n.id === choice);
+            if (currentNoteConfig) {
+                const baseSolfege = currentNoteConfig.solfege.split(' ')[0]; 
+                
+                if (choice.includes('5')) {
+                    const fallbackId = progression.find(n => n.solfege === `${baseSolfege} 4`)?.id;
+                    if (fallbackId && bellBuffers[fallbackId]) {
+                        bellBufferToPlay = bellBuffers[fallbackId];
+                        playbackRateValue = 2.0; 
+                    }
+                } else if (choice.includes('3')) {
+                    const fallbackId = progression.find(n => n.solfege === `${baseSolfege} 4`)?.id;
+                    if (fallbackId && bellBuffers[fallbackId]) {
+                        bellBufferToPlay = bellBuffers[fallbackId];
+                        playbackRateValue = 0.5; 
+                    }
                 }
             }
         }
